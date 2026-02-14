@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.Python
+venv/
+.env
+.vscode/
+.idea/
+# Jupyter
+.ipynb_checkpoints/
+# Data
+data/raw_pdfs/*.pdf
+data/vectorstore/
+# OS
+.DS_Store
