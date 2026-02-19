@@ -1,0 +1,6 @@
+{
+  "chunk_size": 800,
+  "chunk_overlap": 150,
+  "k": 4,
+  "filtering": "smart (auto-detect company/year from question)"
+}

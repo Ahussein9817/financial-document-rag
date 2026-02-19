@@ -1,0 +1,10 @@
+k,question,answer,answer_length,num_sources
+3,What was JPMorgan's total revenue in 2024?,"$224,532 million",16,3
+3,Compare JPMorgan and Bank of America's revenue growth,"JPMorgan's revenue growth from 2024 to 2025 was 3%, while Bank of America's revenue growth from 2024 to 2025 was 6%. This indicates that Bank of America had a higher revenue growth rate compared to JPMorgan during that period.",226,3
+3,What is Bank of America's investment banking revenue?,"$1,167 million",14,3
+4,What was JPMorgan's total revenue in 2024?,"$224,532 million",16,4
+4,Compare JPMorgan and Bank of America's revenue growth,"JPMorgan's revenue growth from 2024 to 2025 was 3%, while Bank of America's revenue growth from 2024 to 2025 was not provided in the context.",141,4
+4,What is Bank of America's investment banking revenue?,"$1,167 million",14,4
+5,What was JPMorgan's total revenue in 2024?,"$224,532 million",16,5
+5,Compare JPMorgan and Bank of America's revenue growth,"JPMorgan's revenue growth from 2024 to 2025 was 3%, while Bank of America's revenue growth from 2022 to 2023 was 9%.",116,5
+5,What is Bank of America's investment banking revenue?,"Bank of America's investment banking revenue is $1,167 million in 2023.",71,5

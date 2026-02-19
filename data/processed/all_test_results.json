@@ -1,0 +1,670 @@
+{
+  "baseline_results": [
+    {
+      "question": "What was JPMorgan's total revenue in 2024?",
+      "answer": "$224,532 million",
+      "sources": [
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What are Bank of America's main business segments?",
+      "answer": "Bank of America's main business segments are Consumer Banking, Global Wealth & Investment Management (GWIM), Global Banking, and Global Markets.",
+      "sources": [
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        },
+        {
+          "file": "BAC_10K_2022.pdf",
+          "ticker": "BAC",
+          "year": "2022"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What risk factors did Citigroup identify in 2023?",
+      "answer": "Citigroup identified risks related to the amount of leverage in the economy, stress in the property sector, adverse effects on financial markets, negative impacts on global economic growth rates, lower consumer confidence, increased risk of recession in Europe, the U.S., and other countries, potential losses on sale due to CTA losses, goodwill write-offs, and other AOCI loss components.",
+      "sources": [
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        },
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2022.pdf",
+          "ticker": "C",
+          "year": "2022"
+        },
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "How did JPMorgan's net income change from 2023 to 2024?",
+      "answer": "JPMorgan's net income increased from $49.6 billion in 2023 to $57.0 billion in 2024.",
+      "sources": [
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        },
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2025.pdf",
+          "ticker": "JPM",
+          "year": "2025"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What is Bank of America's investment banking revenue?",
+      "answer": "Bank of America's investment banking revenue is $1.167 billion in 2023.",
+      "sources": [
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        },
+        {
+          "file": "BAC_10K_2022.pdf",
+          "ticker": "BAC",
+          "year": "2022"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        },
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What was Citigroup's total assets in 2023?",
+      "answer": "Total assets for Citigroup in 2023 were $2,416,676 million.",
+      "sources": [
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        },
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2022.pdf",
+          "ticker": "C",
+          "year": "2022"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What is JPMorgan's return on equity?",
+      "answer": "The return on equity for JPMorgan is 32%, 32%, 38%, 18%, 18%, 14%, 40%, 34%, and 31%.",
+      "sources": [
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2025.pdf",
+          "ticker": "JPM",
+          "year": "2025"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What was Bank of America's net interest income in 2024?",
+      "answer": "$56,060 million",
+      "sources": [
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        },
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        },
+        {
+          "file": "BAC_10K_2022.pdf",
+          "ticker": "BAC",
+          "year": "2022"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "Compare JPMorgan and Bank of America's revenue growth",
+      "answer": "JPMorgan's revenue growth from 2024 to 2025 was 3%, while Bank of America's revenue growth from 2024 to 2025 was not provided in the context.",
+      "sources": [
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2025.pdf",
+          "ticker": "JPM",
+          "year": "2025"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "Which bank had higher trading revenue in 2024?",
+      "answer": "Bank of America had higher trading revenue in 2024.",
+      "sources": [
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "How has JPMorgan's revenue changed from 2023 to 2024?",
+      "answer": "JPMorgan's revenue increased from $158.1 billion in 2023 to $165.1 billion in 2024.",
+      "sources": [
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What trends appear in Citigroup's loan portfolio?",
+      "answer": "One trend in Citigroup's loan portfolio is an increase in corporate loans, specifically in the commercial and industrial sector in North America. Additionally, there is a general increase in total loans across different segments and businesses over the indicated periods.",
+      "sources": [
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2022.pdf",
+          "ticker": "C",
+          "year": "2022"
+        },
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        },
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "How has Bank of America's efficiency ratio changed over time?",
+      "answer": "Bank of America's efficiency ratio has decreased over time. It was 49.34% in the first instance, 45.75% in the second instance, and 49.47% in the third instance.",
+      "sources": [
+        {
+          "file": "BAC_10K_2022.pdf",
+          "ticker": "BAC",
+          "year": "2022"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2022.pdf",
+          "ticker": "C",
+          "year": "2022"
+        },
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What is JPMorgan's digital banking strategy?",
+      "answer": "JPMorgan's digital banking strategy involves modernizing their services and products by moving them to the cloud and adapting to new technologies such as cryptocurrencies and secure distributed ledgers. They are also focusing on providing investment advice and competing with non-banking companies that offer similar products and services.",
+      "sources": [
+        {
+          "file": "JPM_10K_2025.pdf",
+          "ticker": "JPM",
+          "year": "2025"
+        },
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2025.pdf",
+          "ticker": "JPM",
+          "year": "2025"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What are Bank of America's priorities for 2024?",
+      "answer": "Bank of America's priorities for 2024 include providing training and development to employees through Bank of America Academy, conducting an annual Employee Engagement Survey, reviewing human capital strategies based on survey results, and overseeing CEO and senior management succession planning.",
+      "sources": [
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        },
+        {
+          "file": "BAC_10K_2022.pdf",
+          "ticker": "BAC",
+          "year": "2022"
+        },
+        {
+          "file": "BAC_10K_2022.pdf",
+          "ticker": "BAC",
+          "year": "2022"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What challenges did Citigroup face in 2023?",
+      "answer": "Citigroup faced increased competitive challenges from financial services and other companies, as well as emerging technologies. Additionally, factors such as economic stress, property sector issues, and regulatory requirements posed challenges for Citigroup in 2023.",
+      "sources": [
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        },
+        {
+          "file": "C_10K_2022.pdf",
+          "ticker": "C",
+          "year": "2022"
+        },
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What is JPMorgan's consumer banking revenue?",
+      "answer": "To determine JPMorgan's consumer banking revenue, we need to look at the Lending- and deposit-related fees, Mortgage fees and related income, and Card income. \n\nFor 2024, the total of these three categories is $18,300 million ($7,606 million + $1,401 million + $5,497 million).\n\nFor 2023, the total of these three categories is $13,609 million ($7,413 million + $1,176 million + $4,784 million).\n\nFor 2022, the total of these three categories is $11,669 million ($7,098 million + $1,250 million + $4,420 million).\n\nTherefore, JPMorgan's consumer banking revenue for 2024 is $18,300 million, for 2023 is $13,609 million, and for 2022 is $11,669 million.",
+      "sources": [
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2025.pdf",
+          "ticker": "JPM",
+          "year": "2025"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "How did Bank of America's wealth management perform in 2024?",
+      "answer": "Bank of America's wealth management performed well in 2024. Wealth net income increased by 139%, reflecting higher revenues, lower expenses, and a higher benefit from the cost of credit. Wealth revenues increased by 7%, driven by higher non-interest revenue and an increase in net interest income. Wealth expenses decreased by 2%, primarily due to benefits from prior repositioning and restructuring.",
+      "sources": [
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        },
+        {
+          "file": "BAC_10K_2022.pdf",
+          "ticker": "BAC",
+          "year": "2022"
+        },
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What are Citigroup's main revenue sources?",
+      "answer": "Citigroup's main revenue sources are Services, Markets, Banking, U.S. Personal Banking, Wealth, and All Other.",
+      "sources": [
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2022.pdf",
+          "ticker": "C",
+          "year": "2022"
+        },
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What is JPMorgan's employee count?",
+      "answer": "As of December 31, 2025, JPMorganChase had 318,512 employees globally.",
+      "sources": [
+        {
+          "file": "JPM_10K_2025.pdf",
+          "ticker": "JPM",
+          "year": "2025"
+        },
+        {
+          "file": "JPM_10K_2024.pdf",
+          "ticker": "JPM",
+          "year": "2024"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        },
+        {
+          "file": "JPM_10K_2023.pdf",
+          "ticker": "JPM",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What is Bank of America's capital ratio?",
+      "answer": "Bank of America's capital ratio is 15.1% for common equity tier 1 capital, 13.2% for tier 1 capital, and 15.1% for total capital as of December 31, 2024.",
+      "sources": [
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        },
+        {
+          "file": "BAC_10K_2024.pdf",
+          "ticker": "BAC",
+          "year": "2024"
+        },
+        {
+          "file": "BAC_10K_2023.pdf",
+          "ticker": "BAC",
+          "year": "2023"
+        }
+      ],
+      "k": 4
+    },
+    {
+      "question": "What is Citigroup's dividend policy?",
+      "answer": "Citigroup's dividend policy is to generally pay dividends out of current operating earnings. They paid dividends of $4.2 billion in 2024, $16.3 billion in 2023, $8.5 billion in 2022, and $6.2 billion in 2021. They also plan to maintain a quarterly common dividend of $0.56 per share, subject to financial and macroeconomic conditions and Board of Directors' approval.",
+      "sources": [
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        },
+        {
+          "file": "C_10K_2023.pdf",
+          "ticker": "C",
+          "year": "2023"
+        },
+        {
+          "file": "C_10K_2022.pdf",
+          "ticker": "C",
+          "year": "2022"
+        },
+        {
+          "file": "C_10K_2024.pdf",
+          "ticker": "C",
+          "year": "2024"
+        }
+      ],
+      "k": 4
+    }
+  ],
+  "k_experiments": [
+    {
+      "k": 3,
+      "question": "What was JPMorgan's total revenue in 2024?",
+      "answer": "$224,532 million",
+      "answer_length": 16,
+      "num_sources": 3
+    },
+    {
+      "k": 3,
+      "question": "Compare JPMorgan and Bank of America's revenue growth",
+      "answer": "JPMorgan's revenue growth from 2024 to 2025 was 3%, while Bank of America's revenue growth from 2024 to 2025 was 6%. This indicates that Bank of America had a higher revenue growth rate compared to JPMorgan during that period.",
+      "answer_length": 226,
+      "num_sources": 3
+    },
+    {
+      "k": 3,
+      "question": "What is Bank of America's investment banking revenue?",
+      "answer": "$1,167 million",
+      "answer_length": 14,
+      "num_sources": 3
+    },
+    {
+      "k": 4,
+      "question": "What was JPMorgan's total revenue in 2024?",
+      "answer": "$224,532 million",
+      "answer_length": 16,
+      "num_sources": 4
+    },
+    {
+      "k": 4,
+      "question": "Compare JPMorgan and Bank of America's revenue growth",
+      "answer": "JPMorgan's revenue growth from 2024 to 2025 was 3%, while Bank of America's revenue growth from 2024 to 2025 was not provided in the context.",
+      "answer_length": 141,
+      "num_sources": 4
+    },
+    {
+      "k": 4,
+      "question": "What is Bank of America's investment banking revenue?",
+      "answer": "$1,167 million",
+      "answer_length": 14,
+      "num_sources": 4
+    },
+    {
+      "k": 5,
+      "question": "What was JPMorgan's total revenue in 2024?",
+      "answer": "$224,532 million",
+      "answer_length": 16,
+      "num_sources": 5
+    },
+    {
+      "k": 5,
+      "question": "Compare JPMorgan and Bank of America's revenue growth",
+      "answer": "JPMorgan's revenue growth from 2024 to 2025 was 3%, while Bank of America's revenue growth from 2022 to 2023 was 9%.",
+      "answer_length": 116,
+      "num_sources": 5
+    },
+    {
+      "k": 5,
+      "question": "What is Bank of America's investment banking revenue?",
+      "answer": "Bank of America's investment banking revenue is $1,167 million in 2023.",
+      "answer_length": 71,
+      "num_sources": 5
+    }
+  ],
+  "config": {
+    "chunk_size": 800,
+    "chunk_overlap": 150,
+    "k": 4,
+    "filtering": "smart (auto-detect company/year from question)"
+  },
+  "timestamp": "2026-02-18T22:56:25.550306"
+}
