@@ -1,0 +1,20 @@
+{
+  "evaluation_date": "2026-02-19T20:43:17.223758",
+  "total_questions": 15,
+  "overall_accuracy": 53.333333333333336,
+  "category_accuracy": {
+    "Accuracy (%)": {
+      "comparative": 33.33333333333333,
+      "factual": 65.0,
+      "trend": 25.0
+    },
+    "Count": {
+      "comparative": 3,
+      "factual": 10,
+      "trend": 2
+    }
+  },
+  "correct_count": 6,
+  "partial_count": 4,
+  "incorrect_count": 5
+}

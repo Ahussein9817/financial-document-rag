@@ -1,0 +1,16 @@
+question_id,question,category,recall_success,expected_source,retrieved_sources,answer_score
+1,What was JPMorgan Chase total revenue in 2024?,factual,True,JPM_10K_2024.pdf,"['JPM_10K_2024.pdf', 'JPM_10K_2023.pdf', 'JPM_10K_2024.pdf', 'JPM_10K_2024.pdf']",1.0
+2,What are Bank of America four main business segments?,factual,True,BAC_10K_2024.pdf,"['BAC_10K_2024.pdf', 'BAC_10K_2022.pdf', 'JPM_10K_2023.pdf', 'BAC_10K_2023.pdf']",1.0
+3,What was Citigroup total assets at end of 2023?,factual,True,C_10K_2023.pdf,"['C_10K_2024.pdf', 'C_10K_2023.pdf', 'C_10K_2023.pdf', 'C_10K_2022.pdf']",1.0
+4,How many employees does JPMorgan have?,factual,True,JPM_10K_2024.pdf,"['JPM_10K_2025.pdf', 'JPM_10K_2024.pdf', 'JPM_10K_2023.pdf', 'JPM_10K_2023.pdf']",1.0
+5,What is Bank of America CET1 capital ratio in 2024?,factual,False,BAC_10K_2024.pdf,"['JPM_10K_2025.pdf', 'C_10K_2023.pdf', 'C_10K_2024.pdf', 'C_10K_2022.pdf']",0.0
+6,What was JPMorgan net income in 2024?,factual,True,JPM_10K_2024.pdf,"['JPM_10K_2024.pdf', 'JPM_10K_2024.pdf', 'JPM_10K_2023.pdf', 'JPM_10K_2025.pdf']",0.0
+7,What is Citigroup return on equity ROE in 2024?,factual,True,C_10K_2024.pdf,"['C_10K_2024.pdf', 'C_10K_2022.pdf', 'C_10K_2023.pdf', 'C_10K_2024.pdf']",0.5
+8,What was Bank of America net interest income in 2024?,factual,True,BAC_10K_2024.pdf,"['BAC_10K_2024.pdf', 'BAC_10K_2024.pdf', 'BAC_10K_2022.pdf', 'BAC_10K_2023.pdf']",1.0
+9,How many credit cards does Bank of America have outstanding?,factual,True,BAC_10K_2024.pdf,"['BAC_10K_2022.pdf', 'BAC_10K_2024.pdf', 'BAC_10K_2023.pdf', 'BAC_10K_2023.pdf']",0.0
+10,What was Citigroup total revenue in 2024?,factual,True,C_10K_2024.pdf,"['C_10K_2024.pdf', 'C_10K_2024.pdf', 'C_10K_2023.pdf', 'C_10K_2024.pdf']",1.0
+11,"Which bank had the highest net income in 2024: JPMorgan, Bank of America, or Citigroup?",comparative,False,"Multiple: JPM_10K_2024, BAC_10K_2024, C_10K_2024","['JPM_10K_2024.pdf', 'JPM_10K_2023.pdf', 'C_10K_2022.pdf', 'JPM_10K_2024.pdf']",0.5
+12,Compare the total assets of JPMorgan and Citigroup in 2024,comparative,True,"JPM_10K_2024.pdf, C_10K_2024.pdf","['JPM_10K_2024.pdf', 'JPM_10K_2024.pdf', 'JPM_10K_2023.pdf', 'JPM_10K_2024.pdf']",0.0
+13,Which bank has more employees: JPMorgan or Bank of America?,comparative,True,"JPM_10K_2024.pdf, BAC_10K_2024.pdf","['JPM_10K_2025.pdf', 'JPM_10K_2024.pdf', 'BAC_10K_2024.pdf', 'BAC_10K_2023.pdf']",0.5
+14,How did JPMorgan revenue change from 2023 to 2024?,trend,True,"JPM_10K_2024.pdf, JPM_10K_2023.pdf","['JPM_10K_2024.pdf', 'JPM_10K_2023.pdf', 'JPM_10K_2023.pdf', 'JPM_10K_2023.pdf']",0.0
+15,What is the trend in Citigroup net income from 2022 to 2024?,trend,True,"C_10K_2024.pdf, C_10K_2023.pdf, C_10K_2022.pdf","['C_10K_2022.pdf', 'C_10K_2024.pdf', 'C_10K_2024.pdf', 'C_10K_2023.pdf']",0.5

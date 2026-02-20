@@ -1,0 +1,512 @@
+[
+  {
+    "id": 1,
+    "category": "factual",
+    "question": "What was JPMorgan Chase total revenue in 2024?",
+    "ground_truth": "$224,532 million or $224.5 billion",
+    "rag_answer": "$224,532 million",
+    "sources": [
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      },
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      }
+    ],
+    "primary_source": "JPM_10K_2024.pdf",
+    "expected_source": "JPM_10K_2024.pdf",
+    "notes": "Look for consolidated statement of income",
+    "score": 1.0,
+    "score_label": "Correct"
+  },
+  {
+    "id": 2,
+    "category": "factual",
+    "question": "What are Bank of America four main business segments?",
+    "ground_truth": "Consumer Banking, Global Wealth & Investment Management (GWIM), Global Banking, and Global Markets",
+    "rag_answer": "Consumer Banking, Global Wealth & Investment Management (GWIM), Global Banking, and Global Markets.",
+    "sources": [
+      {
+        "file": "BAC_10K_2024.pdf",
+        "ticker": "BAC",
+        "year": "2024"
+      },
+      {
+        "file": "BAC_10K_2022.pdf",
+        "ticker": "BAC",
+        "year": "2022"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      },
+      {
+        "file": "BAC_10K_2023.pdf",
+        "ticker": "BAC",
+        "year": "2023"
+      }
+    ],
+    "primary_source": "BAC_10K_2024.pdf",
+    "expected_source": "BAC_10K_2024.pdf",
+    "notes": "Check business segment overview section",
+    "score": 1.0,
+    "score_label": "Correct"
+  },
+  {
+    "id": 3,
+    "category": "factual",
+    "question": "What was Citigroup total assets at end of 2023?",
+    "ground_truth": "$2,416 billion or $2.416 trillion",
+    "rag_answer": "$2,416,676 million",
+    "sources": [
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      },
+      {
+        "file": "C_10K_2023.pdf",
+        "ticker": "C",
+        "year": "2023"
+      },
+      {
+        "file": "C_10K_2023.pdf",
+        "ticker": "C",
+        "year": "2023"
+      },
+      {
+        "file": "C_10K_2022.pdf",
+        "ticker": "C",
+        "year": "2022"
+      }
+    ],
+    "primary_source": "C_10K_2024.pdf",
+    "expected_source": "C_10K_2023.pdf",
+    "notes": "Consolidated balance sheet",
+    "score": 1.0,
+    "score_label": "Correct"
+  },
+  {
+    "id": 4,
+    "category": "factual",
+    "question": "How many employees does JPMorgan have?",
+    "ground_truth": "Approximately 310,000+ employees",
+    "rag_answer": "As of December 31, 2025, JPMorganChase had 318,512 employees globally.",
+    "sources": [
+      {
+        "file": "JPM_10K_2025.pdf",
+        "ticker": "JPM",
+        "year": "2025"
+      },
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      }
+    ],
+    "primary_source": "JPM_10K_2025.pdf",
+    "expected_source": "JPM_10K_2024.pdf",
+    "notes": "Check business overview or workforce section",
+    "score": 1.0,
+    "score_label": "Correct"
+  },
+  {
+    "id": 5,
+    "category": "factual",
+    "question": "What is Bank of America CET1 capital ratio in 2024?",
+    "ground_truth": "11.8% standardized approach",
+    "rag_answer": "The Bank of America CET1 capital ratio in 2024 is 15.8%.",
+    "sources": [
+      {
+        "file": "JPM_10K_2025.pdf",
+        "ticker": "JPM",
+        "year": "2025"
+      },
+      {
+        "file": "C_10K_2023.pdf",
+        "ticker": "C",
+        "year": "2023"
+      },
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      },
+      {
+        "file": "C_10K_2022.pdf",
+        "ticker": "C",
+        "year": "2022"
+      }
+    ],
+    "primary_source": "JPM_10K_2025.pdf",
+    "expected_source": "BAC_10K_2024.pdf",
+    "notes": "Regulatory capital section",
+    "score": 0.0,
+    "score_label": "Incorrect"
+  },
+  {
+    "id": 6,
+    "category": "factual",
+    "question": "What was JPMorgan net income in 2024?",
+    "ground_truth": "$57.0 billion or $57,040 million",
+    "rag_answer": "JPMorgan's net income in 2024 was $48,665 million.",
+    "sources": [
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      },
+      {
+        "file": "JPM_10K_2025.pdf",
+        "ticker": "JPM",
+        "year": "2025"
+      }
+    ],
+    "primary_source": "JPM_10K_2024.pdf",
+    "expected_source": "JPM_10K_2024.pdf",
+    "notes": "Income statement",
+    "score": 0.0,
+    "score_label": "Incorrect"
+  },
+  {
+    "id": 7,
+    "category": "factual",
+    "question": "What is Citigroup return on equity ROE in 2024?",
+    "ground_truth": "Approximately 8.1%",
+    "rag_answer": "9.4%",
+    "sources": [
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      },
+      {
+        "file": "C_10K_2022.pdf",
+        "ticker": "C",
+        "year": "2022"
+      },
+      {
+        "file": "C_10K_2023.pdf",
+        "ticker": "C",
+        "year": "2023"
+      },
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      }
+    ],
+    "primary_source": "C_10K_2024.pdf",
+    "expected_source": "C_10K_2024.pdf",
+    "notes": "Financial highlights or ratios section",
+    "score": 0.5,
+    "score_label": "Partial"
+  },
+  {
+    "id": 8,
+    "category": "factual",
+    "question": "What was Bank of America net interest income in 2024?",
+    "ground_truth": "$56,060 million or $56.1 billion",
+    "rag_answer": "$56,060 million",
+    "sources": [
+      {
+        "file": "BAC_10K_2024.pdf",
+        "ticker": "BAC",
+        "year": "2024"
+      },
+      {
+        "file": "BAC_10K_2024.pdf",
+        "ticker": "BAC",
+        "year": "2024"
+      },
+      {
+        "file": "BAC_10K_2022.pdf",
+        "ticker": "BAC",
+        "year": "2022"
+      },
+      {
+        "file": "BAC_10K_2023.pdf",
+        "ticker": "BAC",
+        "year": "2023"
+      }
+    ],
+    "primary_source": "BAC_10K_2024.pdf",
+    "expected_source": "BAC_10K_2024.pdf",
+    "notes": "Income statement",
+    "score": 1.0,
+    "score_label": "Correct"
+  },
+  {
+    "id": 9,
+    "category": "factual",
+    "question": "How many credit cards does Bank of America have outstanding?",
+    "ground_truth": "Over 51 million credit card accounts",
+    "rag_answer": "Based on the context provided, it is not possible to determine the exact number of credit cards Bank of America has outstanding.",
+    "sources": [
+      {
+        "file": "BAC_10K_2022.pdf",
+        "ticker": "BAC",
+        "year": "2022"
+      },
+      {
+        "file": "BAC_10K_2024.pdf",
+        "ticker": "BAC",
+        "year": "2024"
+      },
+      {
+        "file": "BAC_10K_2023.pdf",
+        "ticker": "BAC",
+        "year": "2023"
+      },
+      {
+        "file": "BAC_10K_2023.pdf",
+        "ticker": "BAC",
+        "year": "2023"
+      }
+    ],
+    "primary_source": "BAC_10K_2022.pdf",
+    "expected_source": "BAC_10K_2024.pdf",
+    "notes": "Consumer banking metrics",
+    "score": 0.0,
+    "score_label": "Incorrect"
+  },
+  {
+    "id": 10,
+    "category": "factual",
+    "question": "What was Citigroup total revenue in 2024?",
+    "ground_truth": "$81,107 million or $81.1 billion",
+    "rag_answer": "$81.1 billion",
+    "sources": [
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      },
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      },
+      {
+        "file": "C_10K_2023.pdf",
+        "ticker": "C",
+        "year": "2023"
+      },
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      }
+    ],
+    "primary_source": "C_10K_2024.pdf",
+    "expected_source": "C_10K_2024.pdf",
+    "notes": "Income statement, total revenues",
+    "score": 1.0,
+    "score_label": "Correct"
+  },
+  {
+    "id": 11,
+    "category": "comparative",
+    "question": "Which bank had the highest net income in 2024: JPMorgan, Bank of America, or Citigroup?",
+    "ground_truth": "JPMorgan with $57.0 billion (vs BAC ~$26.5B, Citi ~$12.7B)",
+    "rag_answer": "JPMorgan Chase had the highest net income in 2024.",
+    "sources": [
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      },
+      {
+        "file": "C_10K_2022.pdf",
+        "ticker": "C",
+        "year": "2022"
+      },
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      }
+    ],
+    "primary_source": "JPM_10K_2024.pdf",
+    "expected_source": "Multiple: JPM_10K_2024, BAC_10K_2024, C_10K_2024",
+    "notes": "Compare net income across all three",
+    "score": 0.5,
+    "score_label": "Partial"
+  },
+  {
+    "id": 12,
+    "category": "comparative",
+    "question": "Compare the total assets of JPMorgan and Citigroup in 2024",
+    "ground_truth": "JPMorgan: ~$4.1 trillion, Citigroup: ~$2.4 trillion. JPMorgan is larger.",
+    "rag_answer": "In 2024, JPMorgan had total assets of $41,076 million, while Citigroup's total assets are not provided in the context. Therefore, it is not possible to compare the total assets of JPMorgan and Citigroup in 2024 based on the information provided.",
+    "sources": [
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      },
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      }
+    ],
+    "primary_source": "JPM_10K_2024.pdf",
+    "expected_source": "JPM_10K_2024.pdf, C_10K_2024.pdf",
+    "notes": "Balance sheets",
+    "score": 0.0,
+    "score_label": "Incorrect"
+  },
+  {
+    "id": 13,
+    "category": "comparative",
+    "question": "Which bank has more employees: JPMorgan or Bank of America?",
+    "ground_truth": "JPMorgan with ~310,000 vs Bank of America with ~216,000",
+    "rag_answer": "JPMorgan has more employees than Bank of America.",
+    "sources": [
+      {
+        "file": "JPM_10K_2025.pdf",
+        "ticker": "JPM",
+        "year": "2025"
+      },
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "BAC_10K_2024.pdf",
+        "ticker": "BAC",
+        "year": "2024"
+      },
+      {
+        "file": "BAC_10K_2023.pdf",
+        "ticker": "BAC",
+        "year": "2023"
+      }
+    ],
+    "primary_source": "JPM_10K_2025.pdf",
+    "expected_source": "JPM_10K_2024.pdf, BAC_10K_2024.pdf",
+    "notes": "Workforce/employee count sections",
+    "score": 0.5,
+    "score_label": "Partial"
+  },
+  {
+    "id": 14,
+    "category": "trend",
+    "question": "How did JPMorgan revenue change from 2023 to 2024?",
+    "ground_truth": "Increased from ~$195.6B to $224.5B (increase of ~15%)",
+    "rag_answer": "JPMorgan revenue increased from $158.1 billion in 2023 to $165.1 billion in 2024.",
+    "sources": [
+      {
+        "file": "JPM_10K_2024.pdf",
+        "ticker": "JPM",
+        "year": "2024"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      },
+      {
+        "file": "JPM_10K_2023.pdf",
+        "ticker": "JPM",
+        "year": "2023"
+      }
+    ],
+    "primary_source": "JPM_10K_2024.pdf",
+    "expected_source": "JPM_10K_2024.pdf, JPM_10K_2023.pdf",
+    "notes": "Multi-year income statement comparison",
+    "score": 0.0,
+    "score_label": "Incorrect"
+  },
+  {
+    "id": 15,
+    "category": "trend",
+    "question": "What is the trend in Citigroup net income from 2022 to 2024?",
+    "ground_truth": "Variable: 2022: ~$15B, 2023: ~$9.2B, 2024: ~$12.7B (declined then partially recovered)",
+    "rag_answer": "The trend in Citigroup net income from 2022 to 2024 is a decrease.",
+    "sources": [
+      {
+        "file": "C_10K_2022.pdf",
+        "ticker": "C",
+        "year": "2022"
+      },
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      },
+      {
+        "file": "C_10K_2024.pdf",
+        "ticker": "C",
+        "year": "2024"
+      },
+      {
+        "file": "C_10K_2023.pdf",
+        "ticker": "C",
+        "year": "2023"
+      }
+    ],
+    "primary_source": "C_10K_2022.pdf",
+    "expected_source": "C_10K_2024.pdf, C_10K_2023.pdf, C_10K_2022.pdf",
+    "notes": "Three-year comparison needed",
+    "score": 0.5,
+    "score_label": "Partial"
+  }
+]
