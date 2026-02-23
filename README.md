@@ -28,15 +28,14 @@ This project implements a Retrieval-Augmented Generation (RAG) system that enabl
 **Results:**
 
 | Metric | Score | Interpretation |
-|--------|-------|----------------|
-| **Overall Accuracy** | 53.3% | 8/15 questions correct or partial |
+|--------|-------|----------------
 | **Retrieval Recall@4** | 86.7% | Correct source in top 4 chunks (13/15) |
 | **Factual Recall** | 90.0% | Excellent at finding factual data |
 | **Comparative Recall** | 66.7% | Moderate for multi-company queries |
 | **Trend Recall** | 100.0% | Perfect for temporal queries |
 
 **Diagnostic Analysis:**
-- **When retrieval succeeds (86.7% of cases):** 57.7% answer accuracy
+- **When retrieval succeeds (86.7% of cases):**
 - **When retrieval fails (13.3% of cases):** 25.0% answer accuracy
 - **Primary bottleneck:** Generation quality (GPT-3.5), not retrieval
 - **Key insight:** System finds correct documents but struggles with answer synthesis
