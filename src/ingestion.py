@@ -3,7 +3,6 @@ Document Ingestion Pipeline
 Loads PDFs, chunks them, and creates vector embeddings
 """
 
-import os
 from pathlib import Path
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -78,7 +77,7 @@ def save_sample_chunks(chunks, output_file="data/processed/sample_chunks.json", 
     with open(output_file, 'w') as f:
         json.dump(samples, f, indent=2)
     
-    print(f"✓ Saved sample chunks")
+    print("✓ Saved sample chunks")
 
 def create_vectorstore(chunks, persist_directory="data/vectorstore"):
     """Create ChromaDB vector store with embeddings"""
@@ -112,13 +111,13 @@ def main():
     save_sample_chunks(chunks)
     
     # Step 4: Create vector store
-    vectorstore = create_vectorstore(chunks)
+    create_vectorstore(chunks)
     
     print("\n" + "="*60)
     print("✓ INGESTION COMPLETE!")
     print("="*60)
     print(f"Total chunks: {len(chunks)}")
-    print(f"Vector store location: data/vectorstore")
+    print("Vector store location: data/vectorstore")
     print("\nNext step: Test retrieval with test queries")
 
 if __name__ == "__main__":

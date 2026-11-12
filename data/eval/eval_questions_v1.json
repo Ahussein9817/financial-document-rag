@@ -1,0 +1,126 @@
+{
+  "version": "v1-historical",
+  "description": "The original 15-question set copied verbatim from notebooks/evaluation.ipynb (cell 3). Ground truth was written by the project author; it has not been independently re-validated against the filings in this refinement pass.",
+  "questions": [
+    {
+      "category": "factual",
+      "question": "What was JPMorgan Chase total revenue in 2024?",
+      "ground_truth": "$224,532 million or $224.5 billion",
+      "source": "JPM_10K_2024.pdf",
+      "notes": "Look for consolidated statement of income",
+      "id": 1
+    },
+    {
+      "category": "factual",
+      "question": "What are Bank of America four main business segments?",
+      "ground_truth": "Consumer Banking, Global Wealth & Investment Management (GWIM), Global Banking, and Global Markets",
+      "source": "BAC_10K_2024.pdf",
+      "notes": "Check business segment overview section",
+      "id": 2
+    },
+    {
+      "category": "factual",
+      "question": "What was Citigroup total assets at end of 2023?",
+      "ground_truth": "$2,416 billion or $2.416 trillion",
+      "source": "C_10K_2023.pdf",
+      "notes": "Consolidated balance sheet",
+      "id": 3
+    },
+    {
+      "category": "factual",
+      "question": "How many employees does JPMorgan have?",
+      "ground_truth": "Approximately 310,000+ employees",
+      "source": "JPM_10K_2024.pdf",
+      "notes": "Check business overview or workforce section",
+      "id": 4
+    },
+    {
+      "category": "factual",
+      "question": "What is Bank of America CET1 capital ratio in 2024?",
+      "ground_truth": "11.8% standardized approach",
+      "source": "BAC_10K_2024.pdf",
+      "notes": "Regulatory capital section",
+      "id": 5
+    },
+    {
+      "category": "factual",
+      "question": "What was JPMorgan net income in 2024?",
+      "ground_truth": "$57.0 billion or $57,040 million",
+      "source": "JPM_10K_2024.pdf",
+      "notes": "Income statement",
+      "id": 6
+    },
+    {
+      "category": "factual",
+      "question": "What is Citigroup return on equity ROE in 2024?",
+      "ground_truth": "Approximately 8.1%",
+      "source": "C_10K_2024.pdf",
+      "notes": "Financial highlights or ratios section",
+      "id": 7
+    },
+    {
+      "category": "factual",
+      "question": "What was Bank of America net interest income in 2024?",
+      "ground_truth": "$56,060 million or $56.1 billion",
+      "source": "BAC_10K_2024.pdf",
+      "notes": "Income statement",
+      "id": 8
+    },
+    {
+      "category": "factual",
+      "question": "How many credit cards does Bank of America have outstanding?",
+      "ground_truth": "Over 51 million credit card accounts",
+      "source": "BAC_10K_2024.pdf",
+      "notes": "Consumer banking metrics",
+      "id": 9
+    },
+    {
+      "category": "factual",
+      "question": "What was Citigroup total revenue in 2024?",
+      "ground_truth": "$81,107 million or $81.1 billion",
+      "source": "C_10K_2024.pdf",
+      "notes": "Income statement, total revenues",
+      "id": 10
+    },
+    {
+      "category": "comparative",
+      "question": "Which bank had the highest net income in 2024: JPMorgan, Bank of America, or Citigroup?",
+      "ground_truth": "JPMorgan with $57.0 billion (vs BAC ~$26.5B, Citi ~$12.7B)",
+      "source": "Multiple: JPM_10K_2024, BAC_10K_2024, C_10K_2024",
+      "notes": "Compare net income across all three",
+      "id": 11
+    },
+    {
+      "category": "comparative",
+      "question": "Compare the total assets of JPMorgan and Citigroup in 2024",
+      "ground_truth": "JPMorgan: ~$4.1 trillion, Citigroup: ~$2.4 trillion. JPMorgan is larger.",
+      "source": "JPM_10K_2024.pdf, C_10K_2024.pdf",
+      "notes": "Balance sheets",
+      "id": 12
+    },
+    {
+      "category": "comparative",
+      "question": "Which bank has more employees: JPMorgan or Bank of America?",
+      "ground_truth": "JPMorgan with ~310,000 vs Bank of America with ~216,000",
+      "source": "JPM_10K_2024.pdf, BAC_10K_2024.pdf",
+      "notes": "Workforce/employee count sections",
+      "id": 13
+    },
+    {
+      "category": "trend",
+      "question": "How did JPMorgan revenue change from 2023 to 2024?",
+      "ground_truth": "Increased from ~$195.6B to $224.5B (increase of ~15%)",
+      "source": "JPM_10K_2024.pdf, JPM_10K_2023.pdf",
+      "notes": "Multi-year income statement comparison",
+      "id": 14
+    },
+    {
+      "category": "trend",
+      "question": "What is the trend in Citigroup net income from 2022 to 2024?",
+      "ground_truth": "Variable: 2022: ~$15B, 2023: ~$9.2B, 2024: ~$12.7B (declined then partially recovered)",
+      "source": "C_10K_2024.pdf, C_10K_2023.pdf, C_10K_2022.pdf",
+      "notes": "Three-year comparison needed",
+      "id": 15
+    }
+  ]
+}

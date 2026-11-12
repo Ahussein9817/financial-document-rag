@@ -3,6 +3,8 @@ RAG Pipeline for Financial Document Q&A
 Queries SEC 10-K filings from JPMorgan, Bank of America, and Citigroup
 """
 
+import re
+
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -82,13 +84,15 @@ def detect_filters(question):
 
     ticker = None
     for name, t in COMPANY_MAP.items():
-        if name in question_lower:
+        # whole-word match: plain substring matching made "bac" fire inside
+        # "feedback"/"backlog" and "citi" inside "cities"
+        if re.search(rf"\b{re.escape(name)}\b", question_lower):
             ticker = t
             break
 
     year = None
     for y in [2022, 2023, 2024, 2025]:
-        if str(y) in question:
+        if re.search(rf"\b{y}\b", question):
             year = y
             break
 

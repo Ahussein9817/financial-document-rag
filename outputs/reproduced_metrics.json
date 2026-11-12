@@ -1,0 +1,27 @@
+{
+  "answer_scores": {
+    "n_questions": 15,
+    "overall_accuracy_pct": 53.333333333333336,
+    "n_correct": 6,
+    "n_partial": 4,
+    "n_incorrect": 5,
+    "category_accuracy_pct": {
+      "comparative": 33.33333333333333,
+      "factual": 65.0,
+      "trend": 25.0
+    },
+    "category_count": {
+      "comparative": 3,
+      "factual": 10,
+      "trend": 2
+    }
+  },
+  "retrieval": {
+    "recall_pct": 86.66666666666667,
+    "n_success": 13,
+    "n_total": 15,
+    "accuracy_pct_when_retrieved": 57.692307692307686,
+    "accuracy_pct_when_not_retrieved": 25.0
+  },
+  "note": "README text states 60% factual accuracy; the committed scores give 65.0%."
+}

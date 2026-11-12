@@ -13,3 +13,6 @@ data/raw_pdfs/*.pdf
 data/vectorstore/
 # OS
 .DS_Store
+.coverage
+.ruff_cache/
+.pytest_cache/

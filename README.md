@@ -193,7 +193,7 @@ financial-document-rag/
 │   └── rag_pipeline.py    # Q&A system (if converted from notebook)
 ├── notebooks/
 │   ├── day2_rag_pipeline.ipynb    # RAG development
-│   └── day3_evaluation.ipynb      # Evaluation & analysis
+│   └── evaluation.ipynb      # Evaluation & analysis
 ├── outputs/
 │   ├── evaluation_accuracy.png
 │   ├── question_performance.png
@@ -340,3 +340,19 @@ MIT License - see [LICENSE](LICENSE) file
 ---
 
 **Built with:** Python • LangChain • ChromaDB • OpenAI GPT-3.5
+
+
+## Reproducibility and development (added 2026-11-11, branch `improve/portfolio-refinement`)
+
+The historical results above are unchanged. What a fresh clone can and cannot do:
+
+| Step | Command | Needs | Status |
+|---|---|---|---|
+| Unit tests + lint | `pip install -r requirements.txt -r requirements-dev.txt && pytest -q && ruff check .` | nothing external | 24 tests pass locally (Python 3.12) |
+| Recompute README aggregates | `python scripts/reproduce_reported_metrics.py` | committed CSVs only | Reproduces 53.3% overall, 65.0% factual (README prose says 60%), 86.7% document-level recall@4. This re-aggregates the author's manual scores; it does not re-score answers or re-run retrieval. |
+| Build vector store | `python scripts/ingest.py` | `OPENAI_API_KEY`, the 9 PDFs (`docs/data-sources.md`) | **Not run** in this pass (paid API, PDFs not in repo) |
+| Run questions live | `python scripts/run_eval.py` | key + vector store | **Not run**; the runner logic is unit tested with a stub. It records latency, which is the first latency measurement this repo would have (the README's "sub-2-second" and "$3-5" remain unmeasured) |
+
+`data/eval/eval_questions_v1.json` is the original 15 questions copied verbatim from the notebook; their ground truth has not been re-validated against the filings. `src/test_retrieval.py` is a manual smoke script, not part of the test suite.
+
+Bug fixed: company/year detection used substring matching, so "feedback"/"backlog" were read as Bank of America ("bac") and "cities" as Citigroup ("citi"). It now matches whole words (regression tests in `tests/test_rag_pipeline.py`). Historical results were produced with the old matcher; whether any of the 15 evaluation questions was affected has not been checked.
