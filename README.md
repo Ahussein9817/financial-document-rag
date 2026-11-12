@@ -378,6 +378,8 @@ These are re-computations of the same historical retrieval run, not new experime
 - `src/rag_pipeline.py`: one retrieval per query (the prompt and the reported sources are the same chunks); sources carry `file`, 1-based `page`, `passage_id` (`FILE.pdf#pN`), distance score and text; every query emits a JSON log line (logger `rag`) with filters, passages, scores, latency and any error; a filter that matches no chunks logs a warning.
 - `src/retrieval_metrics.py`: Recall@K, hit@K, MRR, nDCG (passage level), file-level collapse, multi-document coverage, filter accuracy.
 - `src/answer_checks.py`: deterministic numeric, groundedness, citation and abstention checks (no LLM).
-- `src/eval_schema.py`, `docs/eval-protocol.md`: schema and validation rules for the v2 question set. **No v2 questions exist yet.**
-- `scripts/fetch_filings.py`: EDGAR download with provenance manifest. **Not yet run.**
+- `src/eval_schema.py`, `docs/eval-protocol.md`, `data/eval/eval_questions_v2.json`: three-state lifecycle (candidate / machine_checked / human_validated; only human_validated is scorable) and 19 candidate questions with no gold. **Nothing in v2 is validated.**
+- `src/html_filing.py`: EDGAR HTML page splitting and fiscal-year/period extraction from the filing itself; chunk ids and provenance are in `ingestion.py`.
+- `scripts/fetch_filings.py`: EDGAR download with provenance manifest (accession, period of report, fiscal year read from the filing). **Not yet run; corpus not downloaded.**
+- `src/answer_checks.py` results are **heuristic** (numeric match, groundedness proxy, abstention phrases) and are reported separately from semantic correctness, which always needs a human.
 - **Not done:** no live ingest or evaluation has been run with these changes (needs the filings and an OpenAI key). The 17,306-chunk corpus and the historical results come from the original run and are not reproduced here.

@@ -1,0 +1,202 @@
+{
+  "version": 2,
+  "description": "Candidate questions for the v2 RAG evaluation set. NONE is validated: statuses are candidate (no gold yet). Gold answers, pages and snippets are deliberately absent until the filings are in the corpus and a person has checked them. See docs/eval-protocol.md. The historical 15-question set (eval_questions_v1.json) is separate and unchanged.",
+  "corpus_manifest_sha256": null,
+  "questions": [
+    {
+      "id": "c01",
+      "stratum": "single_numeric",
+      "question": "What was JPMorgan Chase's net income for fiscal year 2024?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "JPM FY2024 10-K: consolidated statements of income / financial highlights"
+    },
+    {
+      "id": "c02",
+      "stratum": "single_numeric",
+      "question": "What was Bank of America's Common Equity Tier 1 capital ratio at the end of fiscal year 2023 under the standardized approach?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "BAC FY2023 10-K: regulatory capital table"
+    },
+    {
+      "id": "c03",
+      "stratum": "single_numeric",
+      "question": "What were Citigroup's total assets at the end of fiscal year 2024?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "C FY2024 10-K: consolidated balance sheet"
+    },
+    {
+      "id": "c04",
+      "stratum": "single_numeric",
+      "question": "What was JPMorgan Chase's diluted earnings per share for fiscal year 2023?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "JPM FY2023 10-K: financial highlights / income statement"
+    },
+    {
+      "id": "c05",
+      "stratum": "single_text",
+      "question": "Which business segments does Bank of America report in its fiscal 2024 10-K?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "BAC FY2024 10-K: business segment overview"
+    },
+    {
+      "id": "c06",
+      "stratum": "single_text",
+      "question": "How does JPMorgan Chase describe its approach to managing liquidity risk?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "JPM 10-K: liquidity risk management section (fiscal year to be fixed at validation)"
+    },
+    {
+      "id": "c07",
+      "stratum": "single_text",
+      "question": "What reportable segments does Citigroup identify in its fiscal 2024 10-K?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "C FY2024 10-K: segment reporting"
+    },
+    {
+      "id": "c08",
+      "stratum": "multi_same_company",
+      "question": "How did JPMorgan Chase's net income change between fiscal 2023 and fiscal 2024?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "JPM FY2023 and FY2024 10-Ks: net income"
+    },
+    {
+      "id": "c09",
+      "stratum": "multi_same_company",
+      "question": "How did Bank of America's CET1 ratio change from fiscal 2022 to fiscal 2024?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "BAC FY2022 and FY2024 10-Ks: CET1 ratio (standardized)"
+    },
+    {
+      "id": "c10",
+      "stratum": "multi_same_company",
+      "question": "How did Citigroup's total assets change between fiscal 2023 and fiscal 2024?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "C FY2023 and FY2024 10-Ks: balance sheet"
+    },
+    {
+      "id": "c11",
+      "stratum": "multi_cross_company",
+      "question": "Which had higher net income in fiscal 2024, JPMorgan Chase or Bank of America, and by how much?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "JPM and BAC FY2024 10-Ks: net income"
+    },
+    {
+      "id": "c12",
+      "stratum": "multi_cross_company",
+      "question": "Compare the CET1 capital ratios of JPMorgan Chase and Citigroup at the end of fiscal 2024.",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "JPM and C FY2024 10-Ks: regulatory capital"
+    },
+    {
+      "id": "c13",
+      "stratum": "multi_cross_company",
+      "question": "Compare how Bank of America and Citigroup describe the main sources of their revenue in fiscal 2024.",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "BAC and C FY2024 10-Ks: revenue discussion"
+    },
+    {
+      "id": "c14",
+      "stratum": "filter_sensitive",
+      "question": "What was Bank of America's net income in 2024?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "BAC FY2024 10-K",
+      "expected_filter": {
+        "ticker": "BAC",
+        "year": 2024
+      }
+    },
+    {
+      "id": "c15",
+      "stratum": "filter_sensitive",
+      "question": "What were Citigroup's total revenues in 2023?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "C FY2023 10-K",
+      "expected_filter": {
+        "ticker": "C",
+        "year": 2023
+      }
+    },
+    {
+      "id": "c16",
+      "stratum": "filter_sensitive",
+      "question": "How has JPMorgan's net income changed over the years covered?",
+      "answerable": true,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "JPM 10-Ks, several years; no year in the question, ticker filter only",
+      "expected_filter": {
+        "ticker": "JPM",
+        "year": null
+      }
+    },
+    {
+      "id": "c17",
+      "stratum": "unanswerable",
+      "question": "What is JPMorgan Chase's projected net income for fiscal 2030?",
+      "answerable": false,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "Not expected in any 10-K",
+      "absence_terms": [
+        "net income for 2030",
+        "fiscal 2030 net income"
+      ]
+    },
+    {
+      "id": "c18",
+      "stratum": "unanswerable",
+      "question": "What was Goldman Sachs's CET1 ratio in fiscal 2024?",
+      "answerable": false,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "Company not in the corpus",
+      "absence_terms": [
+        "Goldman Sachs CET1 ratio",
+        "Goldman Sachs' CET1"
+      ]
+    },
+    {
+      "id": "c19",
+      "stratum": "unanswerable",
+      "question": "How many employees did Bank of America have at the end of fiscal 2015?",
+      "answerable": false,
+      "status": "candidate",
+      "origin": "claude_drafted",
+      "target": "Fiscal year outside the corpus",
+      "absence_terms": [
+        "employees at December 31, 2015",
+        "fiscal 2015 employees"
+      ]
+    }
+  ]
+}

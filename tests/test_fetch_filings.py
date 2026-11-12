@@ -5,12 +5,6 @@ import pytest
 import fetch_filings as ff
 
 
-def test_fiscal_year_from_text():
-    assert ff.fiscal_year_from_text("For the fiscal year ended December 31, 2024") == 2024
-    assert ff.fiscal_year_from_text("FOR THE FISCAL YEAR  ENDED  December 31,2023") == 2023
-    assert ff.fiscal_year_from_text("no cover page") is None
-
-
 def test_pick_primary_document_ignores_exhibits_and_index():
     idx = {"directory": {"item": [
         {"name": "jpm-20241231.htm", "size": "9000000"},
@@ -22,19 +16,45 @@ def test_pick_primary_document_ignores_exhibits_and_index():
         ff.pick_primary_document({"directory": {"item": []}})
 
 
-def test_fetch_filing_writes_file_and_manifest_entry(tmp_path):
-    index = json.dumps({"directory": {"item": [{"name": "jpm-20241231.htm", "size": "100"}]}}).encode()
-    body = b"<html><body>For the fiscal year ended December 31, 2024 ...</body></html>"
+def _index():
+    return json.dumps({"directory": {"item": [{"name": "jpm-20241231.htm", "size": "100"}]}}).encode()
+
+
+def test_fetch_filing_reads_year_from_filing_not_filing_date(tmp_path):
+    # filed in 2025 but the filing itself says fiscal year 2024
+    body = (b'<html><ix:nonNumeric name="dei:DocumentType">10-K</ix:nonNumeric>'
+            b'<ix:nonNumeric name="dei:DocumentPeriodEndDate">December 31, 2024</ix:nonNumeric>'
+            b'<ix:nonNumeric name="dei:DocumentFiscalYearFocus">2024</ix:nonNumeric></html>')
     calls = []
 
     def fake_get(url, ua):
         calls.append((url, ua))
-        return index if url.endswith("-index.json") else body
+        return _index() if url.endswith("-index.json") else body
 
     e = ff.fetch_filing("JPM", "0000019617-25-000270", tmp_path, "Test test@example.com",
                         get=fake_get, sleep=lambda s: None)
-    assert e["file"] == "JPM_10K_2024.htm" and e["fiscal_year_from_text"] == 2024
+    assert e["file"] == "JPM_10K_2024.htm" and e["fiscal_year"] == 2024
+    assert e["accession"] == "0000019617-25-000270" and e["period_of_report"] == "2024-12-31"
+    assert e["form_type"] == "10-K" and e["fiscal_year_source"] == "ixbrl_dei"
     assert (tmp_path / e["file"]).read_bytes() == body
     assert e["sha256"] == ff.sha256_bytes(body) and e["bytes"] == len(body)
     assert all(ua == "Test test@example.com" for _, ua in calls) and len(calls) == 2
     assert "/data/19617/000001961725000270/" in calls[0][0]
+
+
+def test_unresolvable_fiscal_year_is_flagged_not_guessed(tmp_path):
+    def fake_get(url, ua):
+        return _index() if url.endswith("-index.json") else b"<html>no metadata here</html>"
+
+    e = ff.fetch_filing("C", "0000831001-25-000067", tmp_path, "T t@e.com", get=fake_get, sleep=lambda s: None)
+    assert e["fiscal_year"] is None and e["file"] == "C_10K_UNRESOLVED_0000831001-25-000067.htm"
+
+
+def test_requests_are_rate_limited(tmp_path):
+    sleeps = []
+
+    def fake_get(url, ua):
+        return _index() if url.endswith("-index.json") else b"<html></html>"
+
+    ff.fetch_filing("JPM", "0000019617-25-000270", tmp_path, "T t@e.com", get=fake_get, sleep=sleeps.append)
+    assert sleeps == [ff.MIN_INTERVAL_S, ff.MIN_INTERVAL_S] and ff.MIN_INTERVAL_S >= 0.1   # <= 10 req/s

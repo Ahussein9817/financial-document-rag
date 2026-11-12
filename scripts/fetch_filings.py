@@ -8,20 +8,28 @@ NOT run by CI and not run during development: it downloads files. Run it yoursel
 SEC fair-access rules: declare a User-Agent with a contact, stay <= 10 requests/second
 (this script uses <= 5), download only what you need. The accession numbers are given
 explicitly (no guessing which filing is which fiscal year); `fiscal_year_from_text`
-reads the cover page ("for the fiscal year ended ...") so the filename year can be
-checked against the filing's own statement.
+reads the fiscal year and period of report from the filing itself (iXBRL cover tags, then
+the cover sentence) via `html_filing.read_filing_metadata`; it never takes the year from the
+filing date or a filename. If the filing's own metadata cannot be read the entry is stored as
+`<ticker>_10K_UNRESOLVED_<accession>` with fiscal_year null and ingestion refuses it.
 
-Each filing is stored as ticker_10K_<fiscal year>.<ext> and recorded in manifest.json
-with accession number, source URL, SHA-256 and size.
+Each filing is stored as <ticker>_10K_<fiscal year>.<ext> and recorded in manifest.json with
+accession number, source URL, form type, period of report, fiscal year and how it was
+resolved, SHA-256 and size.
 """
 
 import argparse
 import hashlib
 import json
 import re
+import sys
 import time
 import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+from html_filing import read_filing_metadata  # noqa: E402
 
 CIKS = {"JPM": "0000019617", "BAC": "0000070858", "C": "0000831001"}
 MIN_INTERVAL_S = 0.2  # <= 5 requests/second
@@ -31,12 +39,6 @@ def http_get(url: str, user_agent: str) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": user_agent})
     with urllib.request.urlopen(req, timeout=60) as r:
         return r.read()
-
-
-def fiscal_year_from_text(text: str) -> int | None:
-    """Parse 'for the fiscal year ended December 31, 2024' from a cover page."""
-    m = re.search(r"fiscal\s+year\s+ended\s+[A-Za-z]+\s+\d{1,2},\s*(\d{4})", text, re.IGNORECASE)
-    return int(m.group(1)) if m else None
 
 
 def index_url(cik: str, accession: str) -> str:
@@ -67,15 +69,18 @@ def fetch_filing(ticker: str, accession: str, out: Path, user_agent: str,
     url = f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession.replace('-', '')}/{name}"
     body = get(url, user_agent)
     sleep(MIN_INTERVAL_S)
-    text = re.sub(r"<[^>]+>", " ", body[:400_000].decode("utf-8", "ignore"))
-    fy = fiscal_year_from_text(text)
+    meta = read_filing_metadata(body.decode("utf-8", "ignore"))
+    fy = meta["fiscal_year"]
     ext = Path(name).suffix.lower()
-    dest = out / f"{ticker}_10K_{fy if fy else 'UNKNOWN'}{ext}"
+    label = str(fy) if fy else f"UNRESOLVED_{accession}"
+    dest = out / f"{ticker}_10K_{label}{ext}"
     out.mkdir(parents=True, exist_ok=True)
     dest.write_bytes(body)
     return {"ticker": ticker, "accession": accession, "source_url": url,
-            "fiscal_year_from_text": fy, "file": dest.name,
-            "sha256": sha256_bytes(body), "bytes": len(body)}
+            "form_type": meta["form_type"], "period_of_report": meta["period_of_report"],
+            "fiscal_year": fy, "fiscal_year_source": meta["fiscal_year_source"],
+            "file": dest.name, "sha256": sha256_bytes(body), "bytes": len(body),
+            "retrieved_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
 
 
 def main() -> None:

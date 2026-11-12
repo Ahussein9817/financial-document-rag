@@ -140,3 +140,45 @@ def abstention_scores(rows: list[dict]) -> dict:
         "precision": tp / len(abst) if abst else math.nan,
         "false_abstain_rate": sum(r["abstained"] for r in an) / len(an) if an else math.nan,
     }
+
+
+def evaluate_answer(q: dict, answer: str, retrieved: list[dict], cited: list[str] | None = None) -> dict:
+    """One answer, reported as separate sections that must not be merged into one score.
+
+    q         an eval item (needs gold for answerable ones; only human_validated items should
+              be scored, see eval_schema.scorable)
+    retrieved the chunks used for generation, as stored in a run artifact:
+              [{"passage_id", "text"}, ...] (the same chunks the model saw)
+    cited     passage ids the answer cites, or None if the answer carries no citations
+              (the current pipeline does not produce any).
+
+    Sections:
+      numeric_match         HEURISTIC string/number comparison with the gold value (None for
+                            non-numeric items). Says nothing about meaning or the right period.
+      evidence_support      whether a gold passage was retrieved (exact), plus a HEURISTIC
+                            groundedness proxy (answer numbers appear in the retrieved text)
+                            and citation validity/correctness when citations exist.
+      abstention            HEURISTIC phrase detection against the item's answerable flag.
+      semantic_correctness  always requires human review; never computed here.
+    """
+    gold = q.get("gold", {})
+    passages = [r["passage_id"] for r in retrieved]
+    texts = [r["text"] for r in retrieved]
+    gold_ids = {e["passage_id"] for e in gold.get("evidence", [])}
+
+    numeric = None
+    num = gold.get("numeric")
+    if q.get("answerable") and num:
+        pct = num.get("unit") == "percent"
+        numeric = {**numeric_match(answer, num["value"], gold_is_percent=pct), "kind": "heuristic"}
+
+    support = {
+        "gold_passage_retrieved": bool(gold_ids & set(passages)) if gold_ids else None,
+        "gold_passages_retrieved_fraction": (len(gold_ids & set(passages)) / len(gold_ids)) if gold_ids else None,
+        "groundedness_proxy": {**numeric_groundedness(answer, texts), "kind": "heuristic"},
+        "citation": citation_accuracy(cited, passages, gold_ids) if cited is not None else None,
+    }
+    abst = {"abstained": is_abstention(answer), "answerable": bool(q.get("answerable")), "kind": "heuristic"}
+    return {"id": q.get("id"), "numeric_match": numeric, "evidence_support": support,
+            "abstention": abst,
+            "semantic_correctness": {"status": "requires_human_review", "score": None}}

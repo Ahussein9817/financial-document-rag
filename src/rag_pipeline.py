@@ -139,6 +139,7 @@ def _run(question, vectorstore, k, ticker, year, filter_dict, mode, verbose):
             "event": "rag_query", "mode": mode, "question": question, "k": k,
             "filter": filter_dict, "n_retrieved": len(scored),
             "passages": [passage_id(d.metadata) for d, _ in scored],
+            "chunks": [d.metadata.get("chunk_id") for d, _ in scored],
             "scores": [round(float(s), 4) for _, s in scored],
             "latency_s": round(time.perf_counter() - t0, 3), "error": err,
         }
@@ -214,6 +215,11 @@ def _format_result(question, answer, scored, k, filter_dict=None):
                 "year": doc.metadata.get("year"),
                 "page": (int(doc.metadata["page"]) + 1) if doc.metadata.get("page") is not None else None,
                 "passage_id": passage_id(doc.metadata),
+                "chunk_id": doc.metadata.get("chunk_id"),
+                "content_sha1": doc.metadata.get("content_sha1"),
+                "accession": doc.metadata.get("accession"),
+                "period_of_report": doc.metadata.get("period_of_report"),
+                "fiscal_year_source": doc.metadata.get("fiscal_year_source"),
                 "score": round(float(score), 4),
                 "text": doc.page_content,
             }

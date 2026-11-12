@@ -69,3 +69,45 @@ def test_abstention_scores():
     r = abstention_scores(rows)
     assert r["recall"] == 0.5 and r["precision"] == 0.5 and r["false_abstain_rate"] == 0.5
     assert math.isnan(abstention_scores([{"answerable": True, "abstained": False}])["recall"])
+
+
+def _item():
+    return {"id": "n1", "answerable": True, "stratum": "single_numeric",
+            "gold": {"answer": "$58,471 million",
+                     "numeric": {"value": 58471e6, "unit": "USD", "scale": "million", "period": "FY2024"},
+                     "evidence": [{"passage_id": "JPM_10K_2024.htm#p12", "snippet": "x"}]}}
+
+
+def test_evaluate_answer_reports_sections_separately():
+    from answer_checks import evaluate_answer
+    retrieved = [{"passage_id": "JPM_10K_2024.htm#p12", "text": "Net income was 58,471 million"},
+                 {"passage_id": "JPM_10K_2024.htm#p40", "text": "other"}]
+    r = evaluate_answer(_item(), "Net income was $58.5 billion.", retrieved)
+    assert r["numeric_match"]["match"] and r["numeric_match"]["kind"] == "heuristic"
+    es = r["evidence_support"]
+    assert es["gold_passage_retrieved"] is True and es["citation"] is None
+    assert es["groundedness_proxy"]["kind"] == "heuristic"
+    assert r["semantic_correctness"] == {"status": "requires_human_review", "score": None}
+
+
+def test_numeric_can_match_while_evidence_not_retrieved():
+    from answer_checks import evaluate_answer
+    retrieved = [{"passage_id": "JPM_10K_2024.htm#p40", "text": "unrelated 99"}]
+    r = evaluate_answer(_item(), "Net income was 58,471 million.", retrieved)
+    assert r["numeric_match"]["match"]                         # number right ...
+    assert r["evidence_support"]["gold_passage_retrieved"] is False      # ... but evidence not retrieved
+    assert r["evidence_support"]["groundedness_proxy"]["n_unsupported"] == 1
+
+
+def test_evaluate_answer_citations_percent_and_unanswerable():
+    from answer_checks import evaluate_answer
+    item = {"id": "p", "answerable": True, "gold": {
+        "numeric": {"value": 15.7, "unit": "percent", "scale": "unit", "period": "FY2024"},
+        "evidence": [{"passage_id": "A.htm#p1", "snippet": "x"}]}}
+    r = evaluate_answer(item, "CET1 was 15.7%", [{"passage_id": "A.htm#p1", "text": "15.7%"}],
+                        cited=["A.htm#p1", "B.htm#p2"])
+    assert r["numeric_match"]["match"]
+    assert r["evidence_support"]["citation"] == {"n_cited": 2, "valid": 0.5, "correct": 0.5}
+    un = evaluate_answer({"id": "u", "answerable": False, "gold": {}}, "The context does not contain this.", [])
+    assert un["numeric_match"] is None and un["abstention"]["abstained"] and not un["abstention"]["answerable"]
+    assert un["evidence_support"]["gold_passage_retrieved"] is None
