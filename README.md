@@ -355,4 +355,4 @@ The historical results above are unchanged. What a fresh clone can and cannot do
 
 `data/eval/eval_questions_v1.json` is the original 15 questions copied verbatim from the notebook; their ground truth has not been re-validated against the filings. `src/test_retrieval.py` is a manual smoke script, not part of the test suite.
 
-Bug fixed: company/year detection used substring matching, so "feedback"/"backlog" were read as Bank of America ("bac") and "cities" as Citigroup ("citi"). It now matches whole words (regression tests in `tests/test_rag_pipeline.py`). Historical results were produced with the old matcher; whether any of the 15 evaluation questions was affected has not been checked.
+Bug fixed: company/year detection used substring matching, so "feedback"/"backlog" were read as Bank of America ("bac") and "cities" as Citigroup ("citi"). It now matches whole words (regression tests in `tests/test_rag_pipeline.py`). Historical results were produced with the old matcher; I re-ran old vs. new detection on the 15 evaluation questions and the detected filters are identical for all 15, so the reported results are not affected by this bug.
