@@ -67,3 +67,52 @@ def evaluate_retrieval(results: Sequence[tuple[Sequence[Hashable], set]], ks=(1,
         out[f"hit@{k}"] = sum(hit_at_k(r, rel, k) for r, rel in scored) / n
         out[f"ndcg@{k}"] = sum(ndcg_at_k(r, rel, k) for r, rel in scored) / n
     return out
+
+
+def file_ids(passage_ids: Sequence[Hashable]) -> list:
+    """Collapse passage ids ('file#pN') to file ids, keeping rank order (duplicates kept).
+
+    File-level relevance is a coarser question than passage-level relevance: a file
+    counts as hit if ANY of its passages was retrieved, even a wrong page. Always
+    report the two separately.
+    """
+    return [str(p).split("#", 1)[0] for p in passage_ids if p is not None]
+
+
+def multi_doc_coverage(ranked_files: Sequence[Hashable], gold_files: set, k: int) -> dict:
+    """For questions needing evidence from several documents.
+
+    coverage = fraction of gold files with >=1 retrieved chunk in the top k;
+    all_hit = 1.0 if every gold file is covered. NaN if no gold files.
+    """
+    if k < 1:
+        raise ValueError("k must be >= 1")
+    if not gold_files:
+        return {"coverage": math.nan, "all_hit": math.nan}
+    found = set(ranked_files[:k]) & gold_files
+    return {"coverage": len(found) / len(gold_files), "all_hit": float(found == gold_files)}
+
+
+def filter_accuracy(detected: Sequence[tuple], gold: Sequence[tuple]) -> dict:
+    """Metadata-filter detection accuracy over (ticker, year) pairs (None = no filter).
+
+    Reports exact-match rate, plus per-field accuracy and the two error kinds that
+    matter: `wrong_filter` (a filter was applied but differs from gold, which can
+    exclude the gold document) and `missed_filter` (gold wanted a filter, none detected).
+    """
+    if len(detected) != len(gold):
+        raise ValueError("detected and gold must have the same length")
+    n = len(gold)
+    if n == 0:
+        return {"n": 0}
+    exact = sum(d == g for d, g in zip(detected, gold))
+    tick = sum(d[0] == g[0] for d, g in zip(detected, gold))
+    year = sum(d[1] == g[1] for d, g in zip(detected, gold))
+    wrong = sum(
+        any(dv is not None and dv != gv for dv, gv in zip(d, g)) for d, g in zip(detected, gold)
+    )
+    missed = sum(
+        any(dv is None and gv is not None for dv, gv in zip(d, g)) for d, g in zip(detected, gold)
+    )
+    return {"n": n, "exact": exact / n, "ticker": tick / n, "year": year / n,
+            "wrong_filter": wrong / n, "missed_filter": missed / n}

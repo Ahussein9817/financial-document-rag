@@ -3,13 +3,15 @@ RAG Pipeline for Financial Document Q&A
 Queries SEC 10-K filings from JPMorgan, Bank of America, and Citigroup
 """
 
+import json
+import logging
 import re
+import time
 
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -55,27 +57,6 @@ def format_docs(docs):
     return "\n\n".join([doc.page_content for doc in docs])
 
 
-def build_chain(vectorstore, k=DEFAULT_K, filter_dict=None):
-    """Build a RAG chain with optional metadata filtering"""
-    llm = ChatOpenAI(model_name=LLM_MODEL, temperature=0)
-    prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
-
-    search_kwargs = {"k": k}
-    if filter_dict:
-        search_kwargs["filter"] = filter_dict
-
-    retriever = vectorstore.as_retriever(search_kwargs=search_kwargs)
-
-    chain = (
-        {"context": retriever | format_docs, "question": RunnablePassthrough()}
-        | prompt
-        | llm
-        | StrOutputParser()
-    )
-
-    return chain, retriever
-
-
 # --- Filtering Logic ---
 
 def detect_filters(question):
@@ -107,19 +88,71 @@ def detect_filters(question):
     return ticker, year, filter_dict
 
 
+# --- Retrieval and generation (one retrieval per query) ---
+
+logger = logging.getLogger("rag")
+
+
+def passage_id(metadata):
+    """Stable page-level passage id, e.g. 'JPM_10K_2024.pdf#p87' (1-based page).
+
+    Returns None when the chunk has no file or page metadata (such chunks can never
+    match a gold passage and are counted by the diagnostics).
+    """
+    f, page = metadata.get("source_file"), metadata.get("page")
+    if f is None or page is None:
+        return None
+    return f"{f}#p{int(page) + 1}"
+
+
+def retrieve(question, vectorstore, k=DEFAULT_K, filter_dict=None):
+    """Single similarity search; returns [(Document, distance)]. The same documents
+    are used for the prompt and for the reported sources."""
+    kwargs = {"k": k}
+    if filter_dict:
+        kwargs["filter"] = filter_dict
+    return vectorstore.similarity_search_with_score(question, **kwargs)
+
+
+def generate(question, docs):
+    """Answer from the given documents (the only context the model sees)."""
+    llm = ChatOpenAI(model_name=LLM_MODEL, temperature=0)
+    chain = ChatPromptTemplate.from_template(PROMPT_TEMPLATE) | llm | StrOutputParser()
+    return chain.invoke({"context": format_docs(docs), "question": question})
+
+
+def _run(question, vectorstore, k, ticker, year, filter_dict, mode, verbose):
+    t0 = time.perf_counter()
+    err = None
+    scored, answer = [], None
+    try:
+        scored = retrieve(question, vectorstore, k=k, filter_dict=filter_dict)
+        docs = [d for d, _ in scored]
+        if filter_dict and not docs:
+            logger.warning("filter matched no chunks: %s", filter_dict)
+        answer = generate(question, docs)
+    except Exception as e:
+        err = f"{type(e).__name__}: {e}"
+        raise
+    finally:
+        record = {
+            "event": "rag_query", "mode": mode, "question": question, "k": k,
+            "filter": filter_dict, "n_retrieved": len(scored),
+            "passages": [passage_id(d.metadata) for d, _ in scored],
+            "scores": [round(float(s), 4) for _, s in scored],
+            "latency_s": round(time.perf_counter() - t0, 3), "error": err,
+        }
+        logger.info(json.dumps(record))
+    if verbose:
+        _print_result(question, answer, [d for d, _ in scored], ticker=ticker, year=year)
+    return _format_result(question, answer, scored, k, filter_dict)
+
+
 # --- Main Query Functions ---
 
 def ask_question(question, vectorstore, k=DEFAULT_K, verbose=True):
     """Ask a question without any metadata filtering"""
-    chain, retriever = build_chain(vectorstore, k=k)
-
-    answer = chain.invoke(question)
-    docs = retriever.invoke(question)
-
-    if verbose:
-        _print_result(question, answer, docs)
-
-    return _format_result(question, answer, docs, k)
+    return _run(question, vectorstore, k, None, None, None, "no_filter", verbose)
 
 
 def ask_with_filter(question, vectorstore, ticker=None, year=None, k=DEFAULT_K, verbose=True):
@@ -131,39 +164,18 @@ def ask_with_filter(question, vectorstore, ticker=None, year=None, k=DEFAULT_K, 
         filter_dict = {"ticker": ticker}
     elif year:
         filter_dict = {"year": str(year)}
-
-    chain, retriever = build_chain(vectorstore, k=k, filter_dict=filter_dict)
-
-    answer = chain.invoke(question)
-    docs = retriever.invoke(question)
-
-    if verbose:
-        _print_result(question, answer, docs, ticker=ticker, year=year)
-
-    return _format_result(question, answer, docs, k)
+    return _run(question, vectorstore, k, ticker, year, filter_dict, "explicit_filter", verbose)
 
 
 def smart_ask(question, vectorstore, k=DEFAULT_K, verbose=True):
     """Ask a question with automatic company/year detection"""
     ticker, year, filter_dict = detect_filters(question)
-
     if verbose and (ticker or year):
-        filters = []
-        if ticker:
-            filters.append(f"ticker={ticker}")
+        filters = [f"ticker={ticker}"] if ticker else []
         if year:
             filters.append(f"year={year}")
         print(f"Auto-detected filters: {', '.join(filters)}")
-
-    chain, retriever = build_chain(vectorstore, k=k, filter_dict=filter_dict)
-
-    answer = chain.invoke(question)
-    docs = retriever.invoke(question)
-
-    if verbose:
-        _print_result(question, answer, docs, ticker=ticker, year=year)
-
-    return _format_result(question, answer, docs, k)
+    return _run(question, vectorstore, k, ticker, year, filter_dict, "smart_filter", verbose)
 
 
 # --- Helpers ---
@@ -184,23 +196,28 @@ def _print_result(question, answer, docs, ticker=None, year=None):
     print(f"\nA: {answer}\n")
     print("Sources:")
     for i, doc in enumerate(docs):
-        print(f"  [{i+1}] {doc.metadata.get('source_file')} "
+        print(f"  [{i+1}] {passage_id(doc.metadata)} "
               f"(Ticker: {doc.metadata.get('ticker')}, "
               f"Year: {doc.metadata.get('year')})")
 
 
-def _format_result(question, answer, docs, k):
+def _format_result(question, answer, scored, k, filter_dict=None):
     return {
         "question": question,
         "answer": answer,
         "k": k,
+        "filter": filter_dict,
         "sources": [
             {
                 "file": doc.metadata.get("source_file"),
                 "ticker": doc.metadata.get("ticker"),
                 "year": doc.metadata.get("year"),
+                "page": (int(doc.metadata["page"]) + 1) if doc.metadata.get("page") is not None else None,
+                "passage_id": passage_id(doc.metadata),
+                "score": round(float(score), 4),
+                "text": doc.page_content,
             }
-            for doc in docs
+            for doc, score in scored
         ],
     }
 

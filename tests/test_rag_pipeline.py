@@ -42,37 +42,73 @@ def test_format_docs_joins_page_content():
 
 
 class _Doc:
-    def __init__(self, f, t, y):
-        self.page_content = "x"
-        self.metadata = {"source_file": f, "ticker": t, "year": y}
+    def __init__(self, f, t, y, page=86, text="x"):
+        self.page_content = text
+        self.metadata = {"source_file": f, "ticker": t, "year": y, "page": page}
 
 
-class _FakeChain:
-    def invoke(self, q): return f"answer to: {q}"  # noqa: E701
+class _FakeVS:
+    """Counts retrievals so tests can assert one search per query."""
+    def __init__(self, hits):
+        self.hits, self.calls = hits, []
+
+    def similarity_search_with_score(self, q, **kw):
+        self.calls.append((q, kw))
+        return self.hits
 
 
-class _FakeRetriever:
-    def invoke(self, q): return [_Doc("JPM_10K_2024.pdf", "JPM", "2024")]  # noqa: E701
-
-
-def test_smart_ask_builds_filter_and_formats_result(monkeypatch):
+def _patch_generate(monkeypatch):
     seen = {}
+    monkeypatch.setattr(rp, "generate", lambda q, docs: seen.update(docs=docs) or f"answer to: {q}")
+    return seen
 
-    def fake_build(vs, k=4, filter_dict=None):
-        seen["k"], seen["filter"] = k, filter_dict
-        return _FakeChain(), _FakeRetriever()
 
-    monkeypatch.setattr(rp, "build_chain", fake_build)
-    res = rp.smart_ask("JPMorgan revenue 2024?", vectorstore=None, k=3, verbose=False)
-    assert seen == {"k": 3, "filter": {"$and": [{"ticker": "JPM"}, {"year": "2024"}]}}
-    assert res["answer"].startswith("answer to:")
-    assert res["sources"] == [{"file": "JPM_10K_2024.pdf", "ticker": "JPM", "year": "2024"}]
-    assert res["k"] == 3
+def test_smart_ask_single_retrieval_filter_and_sources(monkeypatch):
+    seen = _patch_generate(monkeypatch)
+    vs = _FakeVS([(_Doc("JPM_10K_2024.pdf", "JPM", "2024", page=86, text="rev"), 0.31)])
+    res = rp.smart_ask("JPMorgan revenue 2024?", vs, k=3, verbose=False)
+    assert len(vs.calls) == 1                                  # no second retrieval
+    assert vs.calls[0][1] == {"k": 3, "filter": {"$and": [{"ticker": "JPM"}, {"year": "2024"}]}}
+    assert seen["docs"][0].page_content == "rev"               # same docs used for the prompt
+    src = res["sources"][0]
+    assert src["passage_id"] == "JPM_10K_2024.pdf#p87"         # 0-based loader page -> 1-based id
+    assert src["page"] == 87 and src["score"] == 0.31 and src["text"] == "rev"
+    assert res["k"] == 3 and res["filter"]["$and"][0] == {"ticker": "JPM"}
 
 
 def test_ask_with_filter_explicit_ticker_only(monkeypatch):
-    seen = {}
-    monkeypatch.setattr(rp, "build_chain",
-                        lambda vs, k=4, filter_dict=None: (seen.setdefault("f", filter_dict), (_FakeChain(), _FakeRetriever()))[1])
-    rp.ask_with_filter("q", None, ticker="BAC", verbose=False)
-    assert seen["f"] == {"ticker": "BAC"}
+    _patch_generate(monkeypatch)
+    vs = _FakeVS([])
+    rp.ask_with_filter("q", vs, ticker="BAC", verbose=False)
+    assert vs.calls[0][1]["filter"] == {"ticker": "BAC"}
+
+
+def test_ask_question_has_no_filter(monkeypatch):
+    _patch_generate(monkeypatch)
+    vs = _FakeVS([])
+    rp.ask_question("q", vs, verbose=False)
+    assert "filter" not in vs.calls[0][1]
+
+
+def test_passage_id_missing_metadata_is_none():
+    assert rp.passage_id({"source_file": "A_10K_2024.pdf"}) is None
+    assert rp.passage_id({"page": 3}) is None
+
+
+def test_query_is_logged_as_json_with_error(monkeypatch, caplog):
+    import json, logging
+    monkeypatch.setattr(rp, "generate", lambda q, docs: (_ for _ in ()).throw(RuntimeError("boom")))
+    vs = _FakeVS([(_Doc("BAC_10K_2023.pdf", "BAC", "2023", page=0), 0.5)])
+    with caplog.at_level(logging.INFO, logger="rag"):
+        with pytest.raises(RuntimeError):
+            rp.ask_question("q", vs, verbose=False)
+    rec = json.loads(caplog.records[-1].getMessage())
+    assert rec["error"].startswith("RuntimeError") and rec["passages"] == ["BAC_10K_2023.pdf#p1"]
+
+
+def test_empty_filtered_result_logs_warning(monkeypatch, caplog):
+    import logging
+    _patch_generate(monkeypatch)
+    with caplog.at_level(logging.WARNING, logger="rag"):
+        rp.ask_with_filter("q", _FakeVS([]), ticker="C", verbose=False)
+    assert any("matched no chunks" in r.getMessage() for r in caplog.records)

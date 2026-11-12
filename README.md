@@ -16,12 +16,12 @@ This project implements a Retrieval-Augmented Generation (RAG) system that enabl
 - Natural language Q&A with GPT-3.5-turbo
 - Source citation for all answers
 - Metadata filtering by company and year
-- Sub-2-second response time
+- Sub-2-second response time (author's claim, not measured here)
 
 ## Performance
 
 **Evaluation Methodology:**
-- Test set: 15 questions with manually verified ground truth
+- Test set: 15 questions with manually written ground truth (historical; not re-validated against the filings, see `docs/eval-protocol.md`)
 - Categories: 10 factual, 3 comparative, 2 trend-based questions
 - Metrics: Answer accuracy + Retrieval recall@4
 
@@ -29,7 +29,7 @@ This project implements a Retrieval-Augmented Generation (RAG) system that enabl
 
 | Metric | Score | Interpretation |
 |--------|-------|----------------
-| **Retrieval Recall@4** | 86.7% | Correct source in top 4 chunks (13/15) |
+| **Document-level hit@4** (README label: "Recall@4") | 86.7% | At least one chunk from the expected file in the top 4 (13/15). Strict file-level recall@4 is 83.3% when several files are expected; MRR 0.733. File-level only: no passage-level labels exist for this set |
 | **Factual Recall** | 90.0% | Excellent at finding factual data |
 | **Comparative Recall** | 66.7% | Moderate for multi-company queries |
 | **Trend Recall** | 100.0% | Perfect for temporal queries |
@@ -44,7 +44,7 @@ This project implements a Retrieval-Augmented Generation (RAG) system that enabl
 
 | Category | Accuracy | Retrieval Recall | Best Use Case |
 |----------|----------|------------------|---------------|
-| **Factual** | 60.0% | 90.0% | Single-company lookups |
+| **Factual** | 65.0% | 90.0% | Single-company lookups |
 | **Comparative** | 33.3% | 66.7% | Cross-company synthesis |
 | **Trend** | 25.0% | 100.0% | Multi-year analysis |
 
@@ -57,18 +57,21 @@ This project implements a Retrieval-Augmented Generation (RAG) system that enabl
 ## Strengths
 
 - **Excellent retrieval:** 86.7% recall - finds correct documents reliably  
-- **Fast queries:** Sub-2-second response time  
+- **Fast queries:** Sub-2-second response time (UNSUPPORTED: no timing was committed; the old pipeline also ran retrieval twice per question)  
 - **Source attribution:** Full transparency on document sources  
-- **Cost-effective:** $3-5 total project cost, ~$0.01/query
+- **Cost-effective:** $3-5 total project cost, ~$0.01/query (author's estimate, not measured in this repo)
 
 ## Limitations
 
 - **Generation bottleneck:** 57.7% accuracy even with correct documents  
+  (57.7% is reproduced from the committed scores, but "generation is the bottleneck" is an interpretation: retrieval is scored at file level, so the right file does not mean the right passage was retrieved, and n=15 is too small to separate the two causes)
 - **Cross-document synthesis:** 33% accuracy on comparative questions  
 - **Multi-year trends:** 25% accuracy on temporal analysis  
 - **Small evaluation set:** Results not statistically robust (n=15)
 
 ## Improvement Roadmap
+
+> **All "expected gain", impact and cost figures in this roadmap are the author's hypotheses. None has been tested.** The measured results are in the Performance section above. The evaluation rebuild is described in `docs/eval-protocol.md`.
 
 **Based on retrieval recall analysis, generation quality is the primary bottleneck.**
 
@@ -368,3 +371,13 @@ Bug fixed: company/year detection used substring matching, so "feedback"/"backlo
 | MRR over the 4 retrieved chunks | 0.733 |
 
 These are re-computations of the same historical retrieval run, not new experiments. Passage-level metrics and a comparison of retrieval configurations still need a larger gold set with page or passage labels (not yet built).
+
+
+## Evaluation tooling added in the refinement branch
+
+- `src/rag_pipeline.py`: one retrieval per query (the prompt and the reported sources are the same chunks); sources carry `file`, 1-based `page`, `passage_id` (`FILE.pdf#pN`), distance score and text; every query emits a JSON log line (logger `rag`) with filters, passages, scores, latency and any error; a filter that matches no chunks logs a warning.
+- `src/retrieval_metrics.py`: Recall@K, hit@K, MRR, nDCG (passage level), file-level collapse, multi-document coverage, filter accuracy.
+- `src/answer_checks.py`: deterministic numeric, groundedness, citation and abstention checks (no LLM).
+- `src/eval_schema.py`, `docs/eval-protocol.md`: schema and validation rules for the v2 question set. **No v2 questions exist yet.**
+- `scripts/fetch_filings.py`: EDGAR download with provenance manifest. **Not yet run.**
+- **Not done:** no live ingest or evaluation has been run with these changes (needs the filings and an OpenAI key). The 17,306-chunk corpus and the historical results come from the original run and are not reproduced here.

@@ -71,3 +71,36 @@ def test_document_level_recall_matches_committed_historical_value():
     # stricter: fraction of ALL expected files retrieved (multi-document questions penalised)
     assert out["recall@4"] < out["hit@4"]
     print("strict file-level recall@4:", out["recall@4"], "MRR:", out["mrr"])
+
+
+def test_file_ids_collapses_pages_and_drops_none():
+    from retrieval_metrics import file_ids
+    assert file_ids(["A_10K_2024.pdf#p3", None, "A_10K_2024.pdf#p9", "B_10K_2023.pdf#p1"]) == [
+        "A_10K_2024.pdf", "A_10K_2024.pdf", "B_10K_2023.pdf"]
+
+
+def test_file_level_hit_can_be_true_when_passage_level_misses():
+    from retrieval_metrics import file_ids, hit_at_k
+    ranked = ["A_10K_2024.pdf#p9"]
+    assert hit_at_k(file_ids(ranked), {"A_10K_2024.pdf"}, 1) == 1.0
+    assert hit_at_k(ranked, {"A_10K_2024.pdf#p3"}, 1) == 0.0
+
+
+def test_multi_doc_coverage():
+    from retrieval_metrics import multi_doc_coverage
+    r = multi_doc_coverage(["A", "B", "A"], {"A", "B", "C"}, 3)
+    assert r["coverage"] == pytest.approx(2 / 3) and r["all_hit"] == 0.0
+    assert multi_doc_coverage(["A", "B"], {"A", "B"}, 2)["all_hit"] == 1.0
+    assert multi_doc_coverage(["A", "B"], {"A", "B"}, 1)["coverage"] == 0.5
+    assert math.isnan(multi_doc_coverage(["A"], set(), 1)["coverage"])
+
+
+def test_filter_accuracy_error_kinds():
+    from retrieval_metrics import filter_accuracy
+    gold = [("JPM", 2024), ("BAC", None), (None, None), ("C", 2023)]
+    det = [("JPM", 2024), ("JPM", None), (None, None), ("C", None)]
+    r = filter_accuracy(det, gold)
+    assert r["exact"] == 0.5 and r["wrong_filter"] == 0.25 and r["missed_filter"] == 0.25
+    assert r["ticker"] == 0.75 and r["year"] == 0.75
+    with pytest.raises(ValueError):
+        filter_accuracy([("A", 1)], [])

@@ -33,6 +33,9 @@ def run_questions(questions, ask, k):
             "id": q.get("id"), "category": q.get("category"), "question": q["question"],
             "expected_source": q.get("source"), "answer": res["answer"],
             "retrieved_files": [s["file"] for s in res["sources"]],
+            "retrieved_passages": [s.get("passage_id") for s in res["sources"]],
+            "retrieved": res["sources"],
+            "filter": res.get("filter"),
             "latency_s": round(time.perf_counter() - t0, 3), "error": err,
         })
     return rows
