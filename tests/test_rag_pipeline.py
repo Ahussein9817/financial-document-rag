@@ -112,3 +112,30 @@ def test_empty_filtered_result_logs_warning(monkeypatch, caplog):
     with caplog.at_level(logging.WARNING, logger="rag"):
         rp.ask_with_filter("q", _FakeVS([]), ticker="C", verbose=False)
     assert any("matched no chunks" in r.getMessage() for r in caplog.records)
+
+
+def test_labeled_context_and_prompt_version():
+    docs = [_Doc("A_10K_2024.htm", "A", "2024", page=0, text="alpha"),
+            _Doc("B_10K_2024.htm", "B", "2024", page=4, text="beta")]
+    assert rp.format_docs_labeled(docs) == "[S1] alpha\n\n[S2] beta"
+    assert "[S2]" in rp.PROMPT_TEMPLATE and rp.PROMPT_VERSION == "v2-cited"
+    assert "[S" not in rp.PROMPT_TEMPLATE_V1          # historical prompt unchanged: no citations
+
+
+def test_extract_citations_maps_labels_and_flags_invented_sources():
+    docs = [_Doc("A_10K_2024.htm", "A", "2024", page=0), _Doc("B_10K_2024.htm", "B", "2024", page=4)]
+    cited, invalid = rp.extract_citations("Revenue rose [S2]. Also [S1][S2] and [S7].", docs)
+    assert cited == ["B_10K_2024.htm#p5", "A_10K_2024.htm#p1"]
+    assert invalid == ["S7"]
+    assert rp.extract_citations("no citations", docs) == ([], [])
+    assert rp.extract_citations("[S1]", [_Doc("A.htm", "A", "1", page=None)])[0] == ["S1"]  # no page metadata
+
+
+def test_smart_ask_returns_cited_passages_from_the_answer(monkeypatch):
+    monkeypatch.setattr(rp, "generate", lambda q, docs: "Net income was 5 [S1].")
+    vs = _FakeVS([(_Doc("JPM_10K_2024.htm", "JPM", "2024", page=11), 0.2),
+                  (_Doc("JPM_10K_2024.htm", "JPM", "2024", page=12), 0.3)])
+    res = rp.smart_ask("JPMorgan net income 2024?", vs, verbose=False)
+    assert res["cited_passages"] == ["JPM_10K_2024.htm#p12"] and res["invalid_citations"] == []
+    assert res["prompt_version"] == "v2-cited"
+    assert {s["passage_id"] for s in res["sources"]} >= set(res["cited_passages"])

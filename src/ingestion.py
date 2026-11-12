@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 import hashlib
 import json
 
-from html_filing import split_html_pages
+from html_filing import locate
 
 # Load environment variables
 load_dotenv()
@@ -56,7 +56,8 @@ def load_filings(directory="data/raw_filings"):
     Ticker, fiscal year, period of report and accession come from the manifest, which in
     turn read them from the filing itself. Entries whose fiscal year could not be resolved
     are refused (never guessed). PDFs are loaded page by page; HTML filings are split on
-    their print page-break markers (see html_filing.py).
+    their print page-break markers, or into fixed-size text blocks when there are too few
+    markers (see html_filing.locate; `locator_kind` records which).
     """
     directory = Path(directory)
     manifest = json.loads((directory / "manifest.json").read_text())
@@ -78,8 +79,10 @@ def load_filings(directory="data/raw_filings"):
                 documents.append(d)
         else:
             html = path.read_text(encoding="utf-8", errors="ignore")
-            for i, text in enumerate(split_html_pages(html)):
-                documents.append(Document(page_content=text, metadata={**base, "page": i}))
+            units, kind = locate(html)
+            for i, text in enumerate(units):
+                documents.append(Document(page_content=text,
+                                          metadata={**base, "page": i, "locator_kind": kind}))
     return documents
 
 

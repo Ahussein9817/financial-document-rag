@@ -98,9 +98,11 @@ def _manifest(tmp_path, html, **over):
 
 
 def test_load_filings_uses_manifest_provenance_and_html_pages(tmp_path):
-    _manifest(tmp_path, '<p>one</p><hr style="page-break-after:always"><p>two</p>')
+    html = "".join(f'<p>page {i}</p><hr style="page-break-after:always">' for i in range(25))
+    _manifest(tmp_path, html)
     docs = ingestion.load_filings(str(tmp_path))
-    assert [d.metadata["page"] for d in docs] == [0, 1] and docs[1].page_content == "two"
+    assert [d.metadata["page"] for d in docs] == list(range(25)) and docs[1].page_content == "page 1"
+    assert all(d.metadata["locator_kind"] == "page_break" for d in docs)
     m = docs[0].metadata
     assert (m["ticker"], m["year"], m["accession"], m["period_of_report"], m["fiscal_year_source"]) == (
         "JPM", "2024", "0000019617-25-000270", "2024-12-31", "ixbrl_dei")
@@ -121,3 +123,11 @@ def test_legacy_pdf_loader_flags_filename_derived_year(tmp_path, monkeypatch):
     _patch_loader(monkeypatch, pages_per_pdf=1)
     docs = ingestion.load_pdfs(str(tmp_path))
     assert docs[0].metadata["fiscal_year_source"] == "filename"
+
+
+def test_load_filings_records_locator_kind_and_block_fallback(tmp_path):
+    html = "".join(f"<p>paragraph {i} " + "word " * 80 + "</p>" for i in range(100))
+    _manifest(tmp_path, html)
+    docs = ingestion.load_filings(str(tmp_path))
+    assert len(docs) > 3 and all(d.metadata["locator_kind"] == "text_block" for d in docs)
+    assert [d.metadata["page"] for d in docs] == list(range(len(docs)))

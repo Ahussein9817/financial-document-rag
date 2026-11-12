@@ -45,10 +45,13 @@ the filing and mark it validated.
 - **Answers** (`answer_checks.evaluate_answer`, no LLM) report separate sections, never one score:
   `numeric_match` (heuristic; unit error flagged separately from value error), `evidence_support`
   (exact: was a gold passage retrieved; heuristic: groundedness proxy = answer numbers appear in the
-  retrieved text; citation validity/correctness only if the answer carries citations, which the
-  current pipeline does not), `abstention` (heuristic phrase list), and `semantic_correctness`
+  retrieved text; citation validity/correctness from the `[S#]` citations the answer prompt now asks for), `abstention` (heuristic phrase list), and `semantic_correctness`
   (always `requires_human_review`). A numerically matching answer can still lack retrieved evidence,
   and a grounded answer can still be wrong; the sections are kept apart for that reason.
 
 Limits: groundedness is a string check; derived numbers (sums, growth) count as unsupported;
 the abstention phrase list is a heuristic; n about 60 gives wide intervals, so report them.
+
+## Citations and prompt versions
+
+The generation prompt (`PROMPT_VERSION = "v2-cited"`) labels each retrieved passage `[S1]`..`[Sk]` and asks the model to cite the passages it used. `extract_citations` maps labels to passage ids and lists any label outside the retrieved set as an invalid (invented) citation. The model's own citations are claims, checked by `citation_accuracy`; they are not evidence that the answer is correct. The historical 15-question results used the earlier uncited prompt (`PROMPT_TEMPLATE_V1`, kept in code) and are not comparable with v2 runs.

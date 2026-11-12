@@ -32,7 +32,21 @@ COMPANY_MAP = {
     "citi": "C",
 }
 
-PROMPT_TEMPLATE = """Answer the question based only on the following context:
+# Prompt used for the historical 15-question evaluation (no citations). Kept for reference;
+# results from it are not comparable with the cited prompt below.
+PROMPT_TEMPLATE_V1 = """Answer the question based only on the following context:
+
+{context}
+
+Question: {question}
+
+Answer:"""
+
+PROMPT_VERSION = "v2-cited"
+PROMPT_TEMPLATE = """Answer the question based only on the following context. Each passage is \
+labelled [S1], [S2], and so on. After each statement that relies on a passage, cite it like [S2]. \
+Cite only passages you actually used. If the context does not contain the answer, reply exactly: \
+"The context does not contain this information."
 
 {context}
 
@@ -53,8 +67,35 @@ def load_vectorstore(persist_directory=VECTORSTORE_DIR):
 
 
 def format_docs(docs):
-    """Format retrieved documents into a single string"""
+    """Format retrieved documents into a single string (historical prompt)"""
     return "\n\n".join([doc.page_content for doc in docs])
+
+
+def format_docs_labeled(docs):
+    """Context with a stable label per passage: [S1] text, [S2] text, ... (label = rank)."""
+    return "\n\n".join(f"[S{i}] {doc.page_content}" for i, doc in enumerate(docs, start=1))
+
+
+_CITE = re.compile(r"\[S(\d+)\]")
+
+
+def extract_citations(answer, docs):
+    """Map [S#] labels in an answer to passage ids of the retrieved docs.
+
+    Returns (cited, invalid): `cited` = passage ids in order of first mention (duplicates
+    removed; a doc without page metadata maps to its label string so it cannot match gold);
+    `invalid` = labels that point outside the retrieved set (a model inventing a source).
+    """
+    cited, invalid = [], []
+    for m in _CITE.finditer(answer or ""):
+        n = int(m.group(1))
+        if 1 <= n <= len(docs):
+            pid = passage_id(docs[n - 1].metadata) or f"S{n}"
+            if pid not in cited:
+                cited.append(pid)
+        elif f"S{n}" not in invalid:
+            invalid.append(f"S{n}")
+    return cited, invalid
 
 
 # --- Filtering Logic ---
@@ -118,7 +159,7 @@ def generate(question, docs):
     """Answer from the given documents (the only context the model sees)."""
     llm = ChatOpenAI(model_name=LLM_MODEL, temperature=0)
     chain = ChatPromptTemplate.from_template(PROMPT_TEMPLATE) | llm | StrOutputParser()
-    return chain.invoke({"context": format_docs(docs), "question": question})
+    return chain.invoke({"context": format_docs_labeled(docs), "question": question})
 
 
 def _run(question, vectorstore, k, ticker, year, filter_dict, mode, verbose):
@@ -203,9 +244,13 @@ def _print_result(question, answer, docs, ticker=None, year=None):
 
 
 def _format_result(question, answer, scored, k, filter_dict=None):
+    cited, invalid = extract_citations(answer, [d for d, _ in scored])
     return {
         "question": question,
         "answer": answer,
+        "prompt_version": PROMPT_VERSION,
+        "cited_passages": cited,
+        "invalid_citations": invalid,
         "k": k,
         "filter": filter_dict,
         "sources": [
@@ -220,6 +265,7 @@ def _format_result(question, answer, scored, k, filter_dict=None):
                 "accession": doc.metadata.get("accession"),
                 "period_of_report": doc.metadata.get("period_of_report"),
                 "fiscal_year_source": doc.metadata.get("fiscal_year_source"),
+                "locator_kind": doc.metadata.get("locator_kind"),
                 "score": round(float(score), 4),
                 "text": doc.page_content,
             }

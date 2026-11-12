@@ -29,7 +29,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from html_filing import read_filing_metadata  # noqa: E402
+from html_filing import locate, read_filing_metadata  # noqa: E402
 
 CIKS = {"JPM": "0000019617", "BAC": "0000070858", "C": "0000831001"}
 MIN_INTERVAL_S = 0.2  # <= 5 requests/second
@@ -69,7 +69,9 @@ def fetch_filing(ticker: str, accession: str, out: Path, user_agent: str,
     url = f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession.replace('-', '')}/{name}"
     body = get(url, user_agent)
     sleep(MIN_INTERVAL_S)
-    meta = read_filing_metadata(body.decode("utf-8", "ignore"))
+    text = body.decode("utf-8", "ignore")
+    meta = read_filing_metadata(text)
+    units, locator_kind = locate(text) if name.lower().endswith((".htm", ".html")) else ([], "pdf_page")
     fy = meta["fiscal_year"]
     ext = Path(name).suffix.lower()
     label = str(fy) if fy else f"UNRESOLVED_{accession}"
@@ -79,6 +81,7 @@ def fetch_filing(ticker: str, accession: str, out: Path, user_agent: str,
     return {"ticker": ticker, "accession": accession, "source_url": url,
             "form_type": meta["form_type"], "period_of_report": meta["period_of_report"],
             "fiscal_year": fy, "fiscal_year_source": meta["fiscal_year_source"],
+            "locator_kind": locator_kind, "n_locators": len(units),
             "file": dest.name, "sha256": sha256_bytes(body), "bytes": len(body),
             "retrieved_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
 

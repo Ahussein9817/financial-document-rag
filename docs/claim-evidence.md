@@ -18,5 +18,6 @@ Evidence types: **README-reported** (author's original run, not reproduced), **r
 | Deterministic numeric / groundedness-proxy / citation / abstention checks | VERIFIED (code); heuristic by design | test | `src/answer_checks.py`, `tests/test_answer_checks.py` | Heuristics; semantic correctness always needs a human |
 | EDGAR recovery with provenance manifest, fiscal year read from the filing | PARTIAL | test (mocked HTTP) | `scripts/fetch_filings.py`, `src/html_filing.py` | Never run against EDGAR; HTML "pages" are print-break approximations |
 | v2 evaluation set | PROPOSED | schema + 19 candidates, no gold | `data/eval/eval_questions_v2.json` | 0 machine-checked, 0 human-validated; nothing is scorable |
-| CI (ruff + pytest) | VERIFIED for earlier heads | CI | run 43156068678 (head fcacf5f) | Latest local commits not yet pushed/run |
+| CI (ruff + pytest) | VERIFIED | CI | run 43312329331 (head 19f12db) | Later local commits not yet pushed/run |
+| Answers cite passages (`[S#]`) and citations are checked against retrieved passages | PARTIAL | test (stubbed) | `src/rag_pipeline.py`, `tests/test_rag_pipeline.py` | Never run with a real model; models may cite wrongly or not at all |
 | Live answers on a validated set; answer accuracy of any v2 run | BLOCKED | not run | none | Needs filings, human validation, OpenAI key and approved spend |

@@ -49,3 +49,24 @@ def test_period_end_without_focus_tag_uses_period_year():
     h = '<ix:nonNumeric name="dei:DocumentPeriodEndDate">June 30, 2024</ix:nonNumeric>'
     m = hf.read_filing_metadata(h)
     assert m["fiscal_year"] == 2024 and m["fiscal_year_source"] == "ixbrl_period_end"
+
+
+def test_split_blocks_is_deterministic_and_bounded():
+    text = "\n".join(f"line {i} " + "x" * 50 for i in range(100))
+    blocks = hf.split_blocks(text, block_chars=500)
+    assert blocks == hf.split_blocks(text, block_chars=500) and len(blocks) > 5
+    assert all(len(b) <= 500 + 60 for b in blocks)
+    assert "\n".join(blocks) == text                       # nothing lost or reordered
+    assert hf.split_blocks("") == []
+
+
+def test_locate_falls_back_to_blocks_when_page_breaks_are_missing():
+    html = "".join(f"<p>paragraph {i} " + "word " * 40 + "</p>" for i in range(200))
+    units, kind = hf.locate(html, min_pages=20, block_chars=1000)
+    assert kind == "text_block" and len(units) > 5
+
+
+def test_locate_uses_page_breaks_when_enough_of_them():
+    html = "".join(f'<p>page {i}</p><hr style="page-break-after:always">' for i in range(25))
+    units, kind = hf.locate(html, min_pages=20)
+    assert kind == "page_break" and len(units) == 25

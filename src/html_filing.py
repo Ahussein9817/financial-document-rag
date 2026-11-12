@@ -108,3 +108,33 @@ def read_filing_metadata(html: str) -> dict:
         fiscal_year, source = int(period[:4]), "ixbrl_period_end"
     return {"form_type": form, "period_of_report": period, "fiscal_year": fiscal_year,
             "fiscal_year_source": source}
+
+
+def split_blocks(text: str, block_chars: int = 4000) -> list[str]:
+    """Deterministic fallback locator: consecutive blocks of whole lines totalling about
+    `block_chars` characters (a single longer line becomes its own block)."""
+    blocks, cur, size = [], [], 0
+    for line in text.split("\n"):
+        if cur and size + len(line) > block_chars:
+            blocks.append("\n".join(cur))
+            cur, size = [], 0
+        cur.append(line)
+        size += len(line) + 1
+    if cur:
+        blocks.append("\n".join(cur))
+    return [b for b in blocks if b.strip()]
+
+
+def locate(html: str, min_pages: int = 20, block_chars: int = 4000) -> tuple[list[str], str]:
+    """Locator units for a filing and their kind.
+
+    ('page_break', pages) when the filing has at least `min_pages` print page breaks;
+    otherwise ('text_block', blocks): fixed-size text blocks. A 10-K is hundreds of pages,
+    so fewer than `min_pages` natural pages means the markers are missing or unusable.
+    The unit number is used as the `pN` in passage ids either way; `locator_kind` records
+    which it is, because a block number is not a printed page number.
+    """
+    pages = split_html_pages(html)
+    if len(pages) >= min_pages:
+        return pages, "page_break"
+    return split_blocks("\n".join(pages), block_chars), "text_block"

@@ -16,3 +16,7 @@ data/vectorstore/
 .coverage
 .ruff_cache/
 .pytest_cache/
+
+# Downloaded SEC filings stay local; the provenance manifest is committed
+data/raw_filings/*
+!data/raw_filings/manifest.json
