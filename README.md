@@ -356,3 +356,15 @@ The historical results above are unchanged. What a fresh clone can and cannot do
 `data/eval/eval_questions_v1.json` is the original 15 questions copied verbatim from the notebook; their ground truth has not been re-validated against the filings. `src/test_retrieval.py` is a manual smoke script, not part of the test suite.
 
 Bug fixed: company/year detection used substring matching, so "feedback"/"backlog" were read as Bank of America ("bac") and "cities" as Citigroup ("citi"). It now matches whole words (regression tests in `tests/test_rag_pipeline.py`). Historical results were produced with the old matcher; I re-ran old vs. new detection on the 15 evaluation questions and the detected filters are identical for all 15, so the reported results are not affected by this bug.
+
+### Retrieval metrics (added 2026-11-11)
+
+`src/retrieval_metrics.py` implements Recall@K, hit@K, MRR and nDCG@K for binary relevance, unit tested on hand-computed cases (`tests/test_retrieval_metrics.py`). They apply to passage-level gold labels, which do not exist yet: the historical 15 questions only record an expected *file*. Applied at file level to the committed retrieved-file lists (4 chunks per question, duplicates kept):
+
+| Measure (file level, 15 questions) | Value |
+|---|---|
+| hit@4: any expected file retrieved (the README's "recall@4") | 86.7% (13/15) |
+| recall@4: fraction of all expected files retrieved (stricter for multi-company questions) | 83.3% |
+| MRR over the 4 retrieved chunks | 0.733 |
+
+These are re-computations of the same historical retrieval run, not new experiments. Passage-level metrics and a comparison of retrieval configurations still need a larger gold set with page or passage labels (not yet built).
