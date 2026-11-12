@@ -42,7 +42,8 @@ def http_get(url: str, user_agent: str) -> bytes:
 
 
 def index_url(cik: str, accession: str) -> str:
-    return f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession.replace('-', '')}/{accession}-index.json"
+    # directory listing; the '<accession>-index.json' variant returns an HTML page
+    return f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession.replace('-', '')}/index.json"
 
 
 def sha256_bytes(b: bytes) -> str:
@@ -50,14 +51,20 @@ def sha256_bytes(b: bytes) -> str:
 
 
 def pick_primary_document(index: dict) -> str:
-    """Primary 10-K document from an EDGAR filing index: prefer the largest .htm document
-    whose name does not look like an exhibit."""
+    """Primary 10-K document from an EDGAR directory listing.
+
+    Prefers the iXBRL main document (name like 'jpm-20241231.htm'); otherwise the largest
+    .htm/.html/.pdf that is not an exhibit, index page or XBRL 'R<n>.htm' viewer page.
+    Sizes in the listing may be empty strings (treated as 0).
+    """
     items = [i for i in index.get("directory", {}).get("item", [])
              if i["name"].lower().endswith((".htm", ".html", ".pdf"))
-             and not re.search(r"ex[-_]?\d|exhibit|index", i["name"], re.IGNORECASE)]
+             and not re.search(r"ex[-_]?\d|exhibit|index|^R\d+\.htm$", i["name"], re.IGNORECASE)]
     if not items:
         raise ValueError("no candidate primary document in filing index")
-    return max(items, key=lambda i: int(i.get("size") or 0))["name"]
+    main = [i for i in items if re.fullmatch(r"[a-z0-9]+-\d{8}\.htm", i["name"])]
+    pool = main or items
+    return max(pool, key=lambda i: int(i.get("size") or 0))["name"]
 
 
 def fetch_filing(ticker: str, accession: str, out: Path, user_agent: str,
@@ -86,13 +93,35 @@ def fetch_filing(ticker: str, accession: str, out: Path, user_agent: str,
             "retrieved_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
 
 
+def reparse_manifest(out: Path) -> list[dict]:
+    """Re-read form type, period, fiscal year and locator info from the files already on disk
+    (no network); keeps accession, URL, hash and retrieval time. Use after a parser fix."""
+    manifest = json.loads((out / "manifest.json").read_text())
+    for e in manifest["filings"]:
+        text = (out / e["file"]).read_bytes().decode("utf-8", "ignore")
+        meta = read_filing_metadata(text)
+        units, kind = locate(text)
+        e.update({"form_type": meta["form_type"], "period_of_report": meta["period_of_report"],
+                  "fiscal_year": meta["fiscal_year"], "fiscal_year_source": meta["fiscal_year_source"],
+                  "locator_kind": kind, "n_locators": len(units)})
+    (out / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    return manifest["filings"]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--user-agent", required=True, help='e.g. "Name email@example.com"')
-    ap.add_argument("--filings", nargs="+", required=True, help="TICKER:ACCESSION ...")
+    ap.add_argument("--user-agent", help='e.g. "Name email@example.com"')
+    ap.add_argument("--filings", nargs="+", help="TICKER:ACCESSION ...")
     ap.add_argument("--out", default="data/raw_filings")
+    ap.add_argument("--reparse-manifest", action="store_true", help="re-read metadata from local files, no network")
     args = ap.parse_args()
     out = Path(args.out)
+    if args.reparse_manifest:
+        for e in reparse_manifest(out):
+            print(e["file"], e["fiscal_year"], e["period_of_report"], e["locator_kind"])
+        return
+    if not args.user_agent or not args.filings:
+        ap.error("--user-agent and --filings are required unless --reparse-manifest")
     entries = []
     for spec in args.filings:
         ticker, accession = spec.split(":")

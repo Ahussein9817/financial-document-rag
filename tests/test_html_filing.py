@@ -70,3 +70,20 @@ def test_locate_uses_page_breaks_when_enough_of_them():
     html = "".join(f'<p>page {i}</p><hr style="page-break-after:always">' for i in range(25))
     units, kind = hf.locate(html, min_pages=20)
     assert kind == "page_break" and len(units) == 25
+
+
+def test_metadata_handles_nested_tags_and_abbreviated_months():
+    # shape seen in real 10-Ks: another nonNumeric nested in the period-end tag, year outside it
+    h = ('<ix:nonNumeric contextRef="c" name="dei:DocumentPeriodEndDate" format="ixt:date-monthname-day-year-en" id="f-3">'
+         '<ix:nonNumeric contextRef="c" name="dei:CurrentFiscalYearEndDate" id="f-2">December 31</ix:nonNumeric>, 2024'
+         '</ix:nonNumeric><ix:nonNumeric name="dei:DocumentType">10-K</ix:nonNumeric>'
+         '<ix:nonNumeric name="dei:DocumentFiscalYearFocus"> 2024 </ix:nonNumeric>')
+    m = hf.read_filing_metadata(h)
+    assert m["period_of_report"] == "2024-12-31" and m["fiscal_year"] == 2024 and m["form_type"] == "10-K"
+    assert hf.parse_date("Dec. 31, 2023") == "2023-12-31" and hf.parse_date("Sept 5, 2022") is None
+
+
+def test_metadata_unescapes_non_breaking_space_entities():
+    h = ('<ix:nonNumeric name="dei:DocumentPeriodEndDate"><ix:nonNumeric name="dei:CurrentFiscalYearEndDate">'
+         'December&#160;31</ix:nonNumeric>, 2024</ix:nonNumeric>')
+    assert hf.read_filing_metadata(h)["period_of_report"] == "2024-12-31"

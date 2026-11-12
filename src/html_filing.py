@@ -9,6 +9,7 @@ page-break markers the whole text is one page (flagged by the caller through `n_
 Standard library only; offline.
 """
 
+import html as html_lib
 import re
 from html.parser import HTMLParser
 
@@ -63,12 +64,25 @@ def split_html_pages(html: str) -> list[str]:
     return [t for t in texts if t]
 
 
-_DEI = r'name="dei:{name}"[^>]*>(?:\s*<[^>]+>)*\s*([^<]+?)\s*<'
+_NONNUM = re.compile(r"<(/?)ix:nonNumeric\b[^>]*>", re.IGNORECASE)
 
 
 def _dei(html: str, name: str) -> str | None:
-    m = re.search(_DEI.format(name=name), html)
-    return m.group(1).strip() if m else None
+    """Text content of the first <ix:nonNumeric name="dei:<name>"> element, tags stripped.
+
+    Real filings nest other nonNumeric elements inside (e.g. the fiscal-year-end tag inside
+    the period-end tag), so the element's end is found by depth counting.
+    """
+    m = re.search(rf'<ix:nonNumeric\b[^>]*name="dei:{name}"[^>]*>', html)
+    if not m:
+        return None
+    depth = 1
+    for t in _NONNUM.finditer(html, m.end()):
+        depth += -1 if t.group(1) else 1
+        if depth == 0:
+            raw = html_lib.unescape(re.sub(r"<[^>]+>", "", html[m.end():t.start()]))
+            return re.sub(r"\s+", " ", raw.replace("\xa0", " ")).strip()
+    return None
 
 
 _MONTHS = {m: i for i, m in enumerate(
@@ -78,10 +92,14 @@ _MONTHS = {m: i for i, m in enumerate(
 
 def parse_date(text: str) -> str | None:
     """'December 31, 2024' -> '2024-12-31'."""
-    m = re.search(r"([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})", text or "")
-    if not m or m.group(1).lower() not in _MONTHS:
+    m = re.search(r"([A-Za-z]+)\.?\s+(\d{1,2}),\s*(\d{4})", text or "")
+    if not m:
         return None
-    return f"{int(m.group(3)):04d}-{_MONTHS[m.group(1).lower()]:02d}-{int(m.group(2)):02d}"
+    name = m.group(1).lower()
+    month = _MONTHS.get(name) or next((v for k, v in _MONTHS.items() if len(name) == 3 and k.startswith(name)), None)
+    if not month:
+        return None
+    return f"{int(m.group(3)):04d}-{month:02d}-{int(m.group(2)):02d}"
 
 
 def read_filing_metadata(html: str) -> dict:
@@ -91,9 +109,12 @@ def read_filing_metadata(html: str) -> dict:
     DocumentFiscalYearFocus). Falls back to the cover sentence 'for the fiscal year ended
     <date>'. `fiscal_year` is None (never guessed) if neither is found.
     """
-    form = _dei(html, "DocumentType")
+    form_text = _dei(html, "DocumentType")
+    form = form_text.split()[0] if form_text else None
     period = parse_date(_dei(html, "DocumentPeriodEndDate") or "")
-    fy_focus = _dei(html, "DocumentFiscalYearFocus")
+    fy_text = _dei(html, "DocumentFiscalYearFocus")
+    fy_m = re.search(r"\b(\d{4})\b", fy_text or "")
+    fy_focus = fy_m.group(1) if fy_m else None
     source = None
     fiscal_year = int(fy_focus) if fy_focus and fy_focus.isdigit() else None
     if fiscal_year is not None:

@@ -122,10 +122,11 @@ def _norm(t: str) -> str:
 
 def numeric_forms(num: dict) -> set[str]:
     """Strings under which a gold numeric value could be printed on the page, at the stated
-    scale (e.g. 224532e6 at scale 'million' -> '224,532'; also with decimals)."""
+    scale (224532e6 at scale 'million' -> '224,532'). Only renderings that round-trip to the
+    gold value within 0.005 are kept, so 11.8 never matches a page that says '12'."""
     v = num["value"] / _SCALES[num["scale"]]
-    forms = {f"{v:,.0f}", f"{v:,.1f}", f"{v:,.2f}", f"{v:.0f}", f"{v:.1f}", f"{v:.2f}"}
-    return {f.rstrip("0").rstrip(".") if "." in f and f.endswith("0") else f for f in forms} | forms
+    forms = {f"{v:,.{d}f}" for d in (0, 1, 2)} | {f"{v:.{d}f}" for d in (0, 1, 2)}
+    return {f for f in forms if abs(float(f.replace(",", "")) - v) <= 0.005}
 
 
 def machine_check(q: dict, pages: dict[str, str]) -> dict:

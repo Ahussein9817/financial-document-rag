@@ -36,14 +36,23 @@ def _unanswerable():
             "absence_terms": ["2031 revenue"], "gold": {}, "machine_check": {"passed": True}}
 
 
-def test_shipped_candidate_file_is_valid_and_has_nothing_scorable():
+def test_shipped_v2_file_is_valid_and_has_nothing_scorable():
     data = json.loads((ROOT / "data/eval/eval_questions_v2.json").read_text())
     rep = validate_dataset(data)
     assert rep["problems"] == {}
-    assert rep["by_status"]["candidate"] == rep["n_questions"] == 19
+    assert rep["n_questions"] == 19
+    assert rep["by_status"]["human_validated"] == 0          # only a person may set this
+    assert rep["by_status"]["machine_checked"] + rep["by_status"]["candidate"] == 19
     assert all(n >= 3 for n in rep["by_stratum"].values())
-    assert scorable(data) == []
-    assert all("gold" not in q for q in data["questions"])      # no invented gold
+    assert scorable(data) == []                              # nothing is gold-standard yet
+
+
+def test_shipped_v2_machine_check_records_name_the_corpus_manifest():
+    data = json.loads((ROOT / "data/eval/eval_questions_v2.json").read_text())
+    checked = [q for q in data["questions"] if q["status"] == "machine_checked"]
+    assert checked and all(q["machine_check"]["passed"] for q in checked)
+    assert {q["machine_check"]["corpus_manifest_sha256"] for q in checked} == {data["corpus_manifest_sha256"]}
+    assert all(q["origin"] == "claude_drafted" for q in data["questions"])
 
 
 def test_candidate_needs_no_gold_but_checked_items_do():
@@ -151,3 +160,10 @@ def test_apply_machine_check_promotes_but_never_validates():
     assert apply_machine_check(bad, PAGES, "d", "s")["status"] == "candidate"
     hv = apply_machine_check(_validated(), PAGES, "d", "s")
     assert hv["status"] == "human_validated"                     # status not changed by the check
+
+
+def test_numeric_forms_keep_only_exact_renderings():
+    assert numeric_forms({"value": 11.8, "scale": "unit"}) == {"11.8", "11.80"}
+    assert "58,471" in numeric_forms({"value": 58471e6, "scale": "million"})
+    assert "58,471.0" in numeric_forms({"value": 58471e6, "scale": "million"})
+    assert "12" not in numeric_forms({"value": 11.8, "scale": "unit"})

@@ -29,11 +29,11 @@ Item format and rules are enforced by `src/eval_schema.py` (`tests/test_eval_sch
 
 No code path sets `human_validated`; that edit is made by hand in the JSON.
 
-Current file: `data/eval/eval_questions_v2.json` holds 19 candidates across all six strata
-with **no gold at all** (gold needs the filings in the corpus and cannot be invented).
-Workflow once filings are fetched: fill gold evidence for a candidate, run
-`apply_machine_check` against the page texts, then review each machine-checked item against
-the filing and mark it validated.
+Current file: `data/eval/eval_questions_v2.json` holds 19 items across all six strata. Gold (answer, page-level evidence with verbatim snippets, numeric values) was **drafted by Claude from the downloaded filings** and then machine-checked with `scripts/machine_check_candidates.py`: all 19 pass (snippets found on the cited passages, numeric values present on them, absence terms absent from the whole corpus), so all 19 are `machine_checked`. **None is `human_validated`, so none is scorable.** Passage numbers are page-break units of the EDGAR HTML, not printed page numbers.
+
+Known weaknesses a reviewer should look for: a machine check proves the text is on the page, not that it answers the question (for example BAC's capital table lists Standardized and Advanced ratios side by side); unanswerable items rest on string searches; several questions rely on one table row.
+
+Workflow to finish: review each item against the filing, then set `status` to `human_validated` with `validation.validated_by` / `validated_on` by hand (or reject it). Add further items toward the ~60 target the same way.
 
 ## Metrics
 

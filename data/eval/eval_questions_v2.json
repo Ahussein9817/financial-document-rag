@@ -1,136 +1,432 @@
 {
   "version": 2,
-  "description": "Candidate questions for the v2 RAG evaluation set. NONE is validated: statuses are candidate (no gold yet). Gold answers, pages and snippets are deliberately absent until the filings are in the corpus and a person has checked them. See docs/eval-protocol.md. The historical 15-question set (eval_questions_v1.json) is separate and unchanged.",
-  "corpus_manifest_sha256": null,
+  "description": "Candidate questions for the v2 RAG evaluation set. NONE is human-validated. Gold was drafted by Claude from the downloaded filings and then machine-checked by scripts/machine_check_candidates.py; a person must still confirm each item against the filing before it can be scored. Passage numbers are page-break units of the downloaded EDGAR HTML, not printed page numbers. See docs/eval-protocol.md. The historical 15-question set (eval_questions_v1.json) is separate and unchanged.",
+  "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367",
   "questions": [
     {
       "id": "c01",
       "stratum": "single_numeric",
       "question": "What was JPMorgan Chase's net income for fiscal year 2024?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "JPM FY2024 10-K: consolidated statements of income / financial highlights"
+      "target": "JPM FY2024 10-K: consolidated statements of income / financial highlights",
+      "gold": {
+        "answer": "$58,471 million",
+        "numeric": {
+          "value": 58471000000.0,
+          "unit": "USD",
+          "scale": "million",
+          "period": "FY2024"
+        },
+        "evidence": [
+          {
+            "passage_id": "JPM_10K_2024.htm#p52",
+            "snippet": "Net income $ 58,471 $ 49,552 $ 37,676"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": true,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c02",
       "stratum": "single_numeric",
       "question": "What was Bank of America's Common Equity Tier 1 capital ratio at the end of fiscal year 2023 under the standardized approach?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "BAC FY2023 10-K: regulatory capital table"
+      "target": "BAC FY2023 10-K: regulatory capital table",
+      "gold": {
+        "answer": "11.8% (Standardized approach)",
+        "numeric": {
+          "value": 11.8,
+          "unit": "percent",
+          "scale": "unit",
+          "period": "FY2023"
+        },
+        "evidence": [
+          {
+            "passage_id": "BAC_10K_2023.htm#p51",
+            "snippet": "Risk-weighted assets (in billions) 1,651 1,459 Common equity tier 1 capital ratio 11.8 %"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": true,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c03",
       "stratum": "single_numeric",
       "question": "What were Citigroup's total assets at the end of fiscal year 2024?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "C FY2024 10-K: consolidated balance sheet"
+      "target": "C FY2024 10-K: consolidated balance sheet",
+      "gold": {
+        "answer": "$2,352,945 million",
+        "numeric": {
+          "value": 2352945000000.0,
+          "unit": "USD",
+          "scale": "million",
+          "period": "FY2024"
+        },
+        "evidence": [
+          {
+            "passage_id": "C_10K_2024.htm#p142",
+            "snippet": "Total assets $ 2,352,945 $ 2,411,834"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": true,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c04",
       "stratum": "single_numeric",
       "question": "What was JPMorgan Chase's diluted earnings per share for fiscal year 2023?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "JPM FY2023 10-K: financial highlights / income statement"
+      "target": "JPM FY2023 10-K: financial highlights / income statement",
+      "gold": {
+        "answer": "$16.23",
+        "numeric": {
+          "value": 16.23,
+          "unit": "USD_per_share",
+          "scale": "unit",
+          "period": "FY2023"
+        },
+        "evidence": [
+          {
+            "passage_id": "JPM_10K_2023.htm#p48",
+            "snippet": "Diluted 16.23 12.09 15.36"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": true,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c05",
       "stratum": "single_text",
       "question": "Which business segments does Bank of America report in its fiscal 2024 10-K?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "BAC FY2024 10-K: business segment overview"
+      "target": "BAC FY2024 10-K: business segment overview",
+      "gold": {
+        "answer": "Consumer Banking, Global Wealth & Investment Management (GWIM), Global Banking and Global Markets, with remaining operations in All Other",
+        "evidence": [
+          {
+            "passage_id": "BAC_10K_2024.htm#p4",
+            "snippet": "four business segments: Consumer Banking, Global Wealth & Investment Management (GWIM), Global Banking and Global Markets"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c06",
       "stratum": "single_text",
-      "question": "How does JPMorgan Chase describe its approach to managing liquidity risk?",
+      "question": "How does JPMorgan Chase describe its approach to managing liquidity risk in its fiscal 2024 10-K?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "JPM 10-K: liquidity risk management section (fiscal year to be fixed at validation)"
+      "target": "JPM 10-K: liquidity risk management section (fiscal year to be fixed at validation)",
+      "gold": {
+        "answer": "Treasury and CIO is responsible for liquidity management; an independent Liquidity Risk Management (LRM) function provides oversight; objectives include ensuring core businesses and material legal entities can operate and meet obligations through normal and stressed conditions",
+        "evidence": [
+          {
+            "passage_id": "JPM_10K_2024.htm#p110",
+            "snippet": "Treasury and CIO is responsible for liquidity management."
+          },
+          {
+            "passage_id": "JPM_10K_2024.htm#p110",
+            "snippet": "has a Liquidity Risk Management (“LRM”) function whose primary objective is to provide independent oversight of liquidity risk across the Firm"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c07",
       "stratum": "single_text",
-      "question": "What reportable segments does Citigroup identify in its fiscal 2024 10-K?",
+      "question": "What operating segments does Citigroup identify in its fiscal 2024 10-K?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "C FY2024 10-K: segment reporting"
+      "target": "C FY2024 10-K: segment reporting",
+      "gold": {
+        "answer": "Services, Markets, Banking, Wealth and U.S. Personal Banking (activities not assigned are in All Other)",
+        "evidence": [
+          {
+            "passage_id": "C_10K_2024.htm#p6",
+            "snippet": "managed pursuant to five operating segments: Services, Markets, Banking, Wealth and U.S. Personal Banking"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c08",
       "stratum": "multi_same_company",
       "question": "How did JPMorgan Chase's net income change between fiscal 2023 and fiscal 2024?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "JPM FY2023 and FY2024 10-Ks: net income"
+      "target": "JPM FY2023 and FY2024 10-Ks: net income",
+      "gold": {
+        "answer": "Rose from $49,552 million (FY2023) to $58,471 million (FY2024), +$8,919 million (about 18%)",
+        "evidence": [
+          {
+            "passage_id": "JPM_10K_2023.htm#p48",
+            "snippet": "Net income $ 49,552 $ 37,676 $ 48,334"
+          },
+          {
+            "passage_id": "JPM_10K_2024.htm#p52",
+            "snippet": "Net income $ 58,471 $ 49,552 $ 37,676"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c09",
       "stratum": "multi_same_company",
       "question": "How did Bank of America's CET1 ratio change from fiscal 2022 to fiscal 2024?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "BAC FY2022 and FY2024 10-Ks: CET1 ratio (standardized)"
+      "target": "BAC FY2022 and FY2024 10-Ks: CET1 ratio (standardized)",
+      "gold": {
+        "answer": "Rose from 11.2% (FY2022) to 11.9% (FY2024), +0.7 percentage points (Standardized approach)",
+        "evidence": [
+          {
+            "passage_id": "BAC_10K_2022.htm#p53",
+            "snippet": "Risk-weighted assets (in billions) 1,605 1,411 Common equity tier 1 capital ratio 11.2 %"
+          },
+          {
+            "passage_id": "BAC_10K_2024.htm#p52",
+            "snippet": "Risk-weighted assets (in billions) 1,696 1,490 Common equity tier 1 capital ratio 11.9 %"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c10",
       "stratum": "multi_same_company",
       "question": "How did Citigroup's total assets change between fiscal 2023 and fiscal 2024?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "C FY2023 and FY2024 10-Ks: balance sheet"
+      "target": "C FY2023 and FY2024 10-Ks: balance sheet",
+      "gold": {
+        "answer": "Fell from $2,411,834 million (FY2023) to $2,352,945 million (FY2024), -$58,889 million (about -2.4%)",
+        "evidence": [
+          {
+            "passage_id": "C_10K_2023.htm#p143",
+            "snippet": "Total assets $ 2,411,834 $ 2,416,676"
+          },
+          {
+            "passage_id": "C_10K_2024.htm#p142",
+            "snippet": "Total assets $ 2,352,945 $ 2,411,834"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c11",
       "stratum": "multi_cross_company",
       "question": "Which had higher net income in fiscal 2024, JPMorgan Chase or Bank of America, and by how much?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "JPM and BAC FY2024 10-Ks: net income"
+      "target": "JPM and BAC FY2024 10-Ks: net income",
+      "gold": {
+        "answer": "JPMorgan Chase: $58,471 million vs Bank of America: $27,132 million; JPMorgan higher by $31,339 million",
+        "evidence": [
+          {
+            "passage_id": "JPM_10K_2024.htm#p52",
+            "snippet": "Net income $ 58,471 $ 49,552 $ 37,676"
+          },
+          {
+            "passage_id": "BAC_10K_2024.htm#p29",
+            "snippet": "Income tax expense 2,122 1,827 Net income 27,132 26,515"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c12",
       "stratum": "multi_cross_company",
       "question": "Compare the CET1 capital ratios of JPMorgan Chase and Citigroup at the end of fiscal 2024.",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "JPM and C FY2024 10-Ks: regulatory capital"
+      "target": "JPM and C FY2024 10-Ks: regulatory capital",
+      "gold": {
+        "answer": "JPMorgan Chase 15.7% (Standardized) vs Citigroup 13.6% (Standardized); JPMorgan higher by 2.1 percentage points",
+        "evidence": [
+          {
+            "passage_id": "JPM_10K_2024.htm#p57",
+            "snippet": "the Standardized and Advanced CET1 ratios were 15.7% and 15.8%, respectively"
+          },
+          {
+            "passage_id": "C_10K_2024.htm#p8",
+            "snippet": "CET1 Capital ratio was 13.6% as of December 31, 2024"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c13",
       "stratum": "multi_cross_company",
-      "question": "Compare how Bank of America and Citigroup describe the main sources of their revenue in fiscal 2024.",
+      "question": "Compare total revenue, net of interest expense, for Bank of America and Citigroup in fiscal 2024.",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
-      "target": "BAC and C FY2024 10-Ks: revenue discussion"
+      "target": "BAC and C FY2024 10-Ks: consolidated income statements",
+      "gold": {
+        "answer": "Bank of America $101,887 million vs Citigroup $81,139 million; Bank of America higher by $20,748 million",
+        "evidence": [
+          {
+            "passage_id": "BAC_10K_2024.htm#p29",
+            "snippet": "Total revenue, net of interest expense 101,887 98,581"
+          },
+          {
+            "passage_id": "C_10K_2024.htm#p140",
+            "snippet": "Total revenues, net of interest expense $ 81,139 $ 78,462 $ 75,338"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c14",
       "stratum": "filter_sensitive",
       "question": "What was Bank of America's net income in 2024?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
       "target": "BAC FY2024 10-K",
       "expected_filter": {
         "ticker": "BAC",
         "year": 2024
+      },
+      "gold": {
+        "answer": "$27,132 million",
+        "numeric": {
+          "value": 27132000000.0,
+          "unit": "USD",
+          "scale": "million",
+          "period": "FY2024"
+        },
+        "evidence": [
+          {
+            "passage_id": "BAC_10K_2024.htm#p29",
+            "snippet": "Income tax expense 2,122 1,827 Net income 27,132 26,515"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": true,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
       }
     },
     {
@@ -138,12 +434,35 @@
       "stratum": "filter_sensitive",
       "question": "What were Citigroup's total revenues in 2023?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
       "target": "C FY2023 10-K",
       "expected_filter": {
         "ticker": "C",
         "year": 2023
+      },
+      "gold": {
+        "answer": "$78,462 million",
+        "numeric": {
+          "value": 78462000000.0,
+          "unit": "USD",
+          "scale": "million",
+          "period": "FY2023"
+        },
+        "evidence": [
+          {
+            "passage_id": "C_10K_2023.htm#p141",
+            "snippet": "Total revenues, net of interest expense $ 78,462 $ 75,338 $ 71,884"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": true,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
       }
     },
     {
@@ -151,12 +470,29 @@
       "stratum": "filter_sensitive",
       "question": "How has JPMorgan's net income changed over the years covered?",
       "answerable": true,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
       "target": "JPM 10-Ks, several years; no year in the question, ticker filter only",
       "expected_filter": {
         "ticker": "JPM",
         "year": null
+      },
+      "gold": {
+        "answer": "$37,676 million (FY2022), $49,552 million (FY2023), $58,471 million (FY2024)",
+        "evidence": [
+          {
+            "passage_id": "JPM_10K_2024.htm#p52",
+            "snippet": "Net income $ 58,471 $ 49,552 $ 37,676"
+          }
+        ]
+      },
+      "machine_check": {
+        "passed": true,
+        "snippets_found": true,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
       }
     },
     {
@@ -164,39 +500,66 @@
       "stratum": "unanswerable",
       "question": "What is JPMorgan Chase's projected net income for fiscal 2030?",
       "answerable": false,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
       "target": "Not expected in any 10-K",
       "absence_terms": [
         "net income for 2030",
         "fiscal 2030 net income"
-      ]
+      ],
+      "gold": {},
+      "machine_check": {
+        "passed": true,
+        "snippets_found": null,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c18",
       "stratum": "unanswerable",
       "question": "What was Goldman Sachs's CET1 ratio in fiscal 2024?",
       "answerable": false,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
       "target": "Company not in the corpus",
       "absence_terms": [
         "Goldman Sachs CET1 ratio",
         "Goldman Sachs' CET1"
-      ]
+      ],
+      "gold": {},
+      "machine_check": {
+        "passed": true,
+        "snippets_found": null,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     },
     {
       "id": "c19",
       "stratum": "unanswerable",
       "question": "How many employees did Bank of America have at the end of fiscal 2015?",
       "answerable": false,
-      "status": "candidate",
+      "status": "machine_checked",
       "origin": "claude_drafted",
       "target": "Fiscal year outside the corpus",
       "absence_terms": [
         "employees at December 31, 2015",
         "fiscal 2015 employees"
-      ]
+      ],
+      "gold": {},
+      "machine_check": {
+        "passed": true,
+        "snippets_found": null,
+        "numeric_found": null,
+        "problems": [],
+        "checked_on": "2026-11-12",
+        "corpus_manifest_sha256": "fa964d6e1e41922b9aa20c094bcc69d5a2aa45fb1e975ad92fe386a45a446367"
+      }
     }
   ]
 }
